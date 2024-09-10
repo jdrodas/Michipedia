@@ -1,0 +1,78 @@
+// Scripts de clase - Septiembre 5 de 2024 
+// Curso de Tópicos Avanzados de base de datos - UPB 202420
+// Juan Dario Rodas - juand.rodasm@upb.edu.co
+
+// Proyecto: Michipedia - Enciclopedia de Gatos
+// Motor de Base de datos: PostgreSQL 16.x
+
+// Especificación en DBML del modelo de datos
+
+Table "core"."paises" {
+  "id" integer [pk, increment, note: 'id del pais']
+  "nombre" varchar(100) [not null, note: 'Nombre del pais']
+  "continente" varchar(100) [not null, note: 'Continente donde está ubicado el país']
+  "pais_uuid" uuid [not null, default: `gen_random_uuid()`, note: 'UUID del país para uso por API']
+
+  Indexes {
+    (nombre, continente) [unique, name: "paises_continentes_uk"]
+  }
+  Note: 'Paises origen de las razas de gatos'
+}
+
+Table "core"."caracteristicas" {
+  "id" integer [pk, increment, note: 'id de la característica']
+  "nombre" varchar(30) [not null, note: 'Nombre de la característica']
+  "descripcion" varchar(200) [not null, note: 'Descripción de la característica']
+  "caracteristica_uuid" uuid [not null, default: `gen_random_uuid()`, note: 'UUID de la característica para uso por API']
+  Note: 'Características de las razas de gatos'
+}
+
+Table "core"."comportamientos" {
+  "id" integer [pk, increment, note: 'id del comportamiento']
+  "nombre" varchar(30) [not null, note: 'Nombre del comportamiento']
+  "descripcion" varchar(200) [not null, note: 'Descripción del comportamiento']
+  "comportamiento_uuid" uuid [not null, default: `gen_random_uuid()`, note: 'UUID del comportamiento para uso por API']
+  Note: 'Comportamiento de las razas de gatos'
+}
+
+Table "core"."comportamientos_niveles"{
+  "id" integer [pk, increment, note: 'id del nivel de comportamiento']
+  "comportamiento_id" integer [not null, note: 'id del comportamiento']
+  "nombre" varchar(20) [not null, note: 'Nombre del nivel de comportamiento']
+  "valoracion" varchar(200) [not null, note: 'Valoración del nivel de comportamiento']
+  Note: 'Niveles de comportamiento de las razas de gatos'
+}
+
+Ref:"core"."comportamientos"."id" < "core"."comportamientos_niveles"."comportamiento_id"
+
+Table "core"."razas"{
+  "id" integer [pk, increment, note: 'id de la raza']
+  "nombre" varchar(20) [not null, note: 'Nombre de la raza']
+  "pais_id" integer [not null, note: 'Id del país origen de la raza']
+  "descripcion" text [note: 'Descripción de la raza']
+  "raza_uuid" uuid [not null, default: `gen_random_uuid()`, note: 'UUID de la raza para uso por API']
+  
+}
+
+Ref:"core"."razas"."pais_id" < "core"."paises"."id"
+
+Table "core"."caracteristicas_raza"
+{
+  raza_id integer [pk, not null, note: 'id de la raza']
+  caracteristica_id integer [pk, not null, note: 'id de la característica']
+  descripcion varchar(200) [not null, note: 'Descripción de la característica de la raza']
+  Note: 'Relación de las características con las razas de gatos'
+}
+
+Ref:"core"."razas"."id" < "core"."caracteristicas_raza"."raza_id"
+Ref:"core"."caracteristicas"."id" < "core"."caracteristicas_raza"."caracteristica_id"
+
+Table "core"."comportamientos_niveles_razas"
+{
+  raza_id integer [pk, not null, note: 'id de la raza']
+  comportamiento_nivel_id integer [pk, not null, note: 'id del nivel del comportamiento']
+  Note: 'Relación de los comportamientos de las razas de gatos'  
+}
+
+Ref:"core"."razas"."id" < "core"."comportamientos_niveles_razas"."raza_id"
+Ref:"core"."comportamientos_niveles"."id" < "core"."comportamientos_niveles_razas"."comportamiento_nivel_id"
