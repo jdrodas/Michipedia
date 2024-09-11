@@ -113,11 +113,11 @@ create table core.comportamientos_niveles
     valoracion          varchar(200) not null
 );
 
-comment on table core.niveles_comportamientos is 'Niveles de comportamiento de las razas de gatos';
-comment on column core.niveles_comportamientos.id is 'id del nivel de comportamiento';
-comment on column core.niveles_comportamientos.comportamiento_id is 'id del comportamiento';
-comment on column core.niveles_comportamientos.nombre is 'Nombre del nivel de comportamiento';
-comment on column core.niveles_comportamientos.valoracion is 'Valoración del nivel de comportamiento';
+comment on table core.comportamientos_niveles is 'Niveles de comportamiento de las razas de gatos';
+comment on column core.comportamientos_niveles.id is 'id del nivel de comportamiento';
+comment on column core.comportamientos_niveles.comportamiento_id is 'id del comportamiento';
+comment on column core.comportamientos_niveles.nombre is 'Nombre del nivel de comportamiento';
+comment on column core.comportamientos_niveles.valoracion is 'Valoración del nivel de comportamiento';
 
 -- Tabla Razas
 create table core.razas
@@ -150,17 +150,17 @@ comment on column core.caracteristicas_razas.raza_id is 'id de la raza';
 comment on column core.caracteristicas_razas.caracteristica_id is 'id de la característica';
 comment on column core.caracteristicas_razas.descripcion is 'Descripción de la característica de la raza';
 
--- Tabla de comportamientos_raza
+-- Tabla de comportamientos_niveles_razas
 create table core.comportamientos_niveles_razas
 (
     raza_id                     integer not null constraint raza_caracteristica_raza_fk references core.razas,
-    comportamiento_nivel_id     integer not null constraint raza_nivel_comportamiento_fk references core.niveles_comportamientos,
-    constraint comportamientos_razas_pk primary key (raza_id, nivel_comportamiento_id)
+    comportamiento_nivel_id     integer not null constraint raza_nivel_comportamiento_fk references core.comportamientos_niveles,
+    constraint comportamientos_razas_pk primary key (raza_id, comportamiento_nivel_id)
 );
 
-comment on table core.comportamientos_razas is 'Relación de los comportamientos de las razas de gatos';
-comment on column core.comportamientos_razas.raza_id is 'id de la raza';
-comment on column core.comportamientos_razas.nivel_comportamiento_id is 'id del nivel del comportamiento';
+comment on table core.comportamientos_niveles_razas is 'Relación de los comportamientos de las razas de gatos';
+comment on column core.comportamientos_niveles_razas.raza_id is 'id de la raza';
+comment on column core.comportamientos_niveles_razas.comportamiento_nivel_id is 'id del nivel del comportamiento';
 
 -- ****************************************
 -- Creación de las vistas
@@ -177,8 +177,8 @@ create or replace view core.v_info_comportamientos as
         nc.id nivel_id,
         nc.nombre nivel_nombre,
         nc.valoracion nivel_valoracion
-    from comportamientos c 
-        inner join niveles_comportamientos nc on c.id = nc.comportamiento_id
+    from comportamientos c
+        inner join comportamientos_niveles nc on c.id = nc.comportamiento_id
 );
 
 -- Vista v_info_caracteristicas_razas
@@ -207,4 +207,4 @@ select distinct
     p.continente pais_continente
     from core.razas r
         inner join core.paises p on p.id = r.pais_id
-)
+);
