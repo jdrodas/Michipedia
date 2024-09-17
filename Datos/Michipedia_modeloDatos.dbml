@@ -54,7 +54,7 @@ Table "core"."razas"{
   
 }
 
-Ref:"core"."razas"."pais_id" < "core"."paises"."id"
+Ref:"core"."razas"."pais_id" > "core"."paises"."id"
 
 Table "core"."caracteristicas_raza"
 {
