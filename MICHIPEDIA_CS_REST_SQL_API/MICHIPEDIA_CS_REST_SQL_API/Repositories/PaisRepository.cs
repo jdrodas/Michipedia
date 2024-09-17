@@ -2,6 +2,7 @@
 using MICHIPEDIA_CS_REST_SQL_API.DbContexts;
 using MICHIPEDIA_CS_REST_SQL_API.Interfaces;
 using MICHIPEDIA_CS_REST_SQL_API.Models;
+using System.Data;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MICHIPEDIA_CS_REST_SQL_API.Repositories
@@ -22,6 +23,31 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Repositories
                 .QueryAsync<Pais>(sentenciaSQL, new DynamicParameters());
 
             return resultadoDepartamentos.ToList();
+        }
+
+        public async Task<Pais> GetByGuidAsync(Guid pais_guid)
+        {
+            Pais unPais = new();
+
+            var conexion = contextoDB.CreateConnection();
+
+            DynamicParameters parametrosSentencia = new();
+            parametrosSentencia.Add("@pais_guid", pais_guid,
+                                    DbType.Guid, ParameterDirection.Input);
+
+            string sentenciaSQL =
+                "SELECT pais_uuid uuid, nombre, continente " +
+                "FROM core.paises " +
+                "WHERE pais_uuid = @pais_guid ";
+
+
+            var resultado = await conexion.QueryAsync<Pais>(sentenciaSQL,
+                parametrosSentencia);
+
+            if (resultado.Any())
+                unPais = resultado.First();
+
+            return unPais;
         }
     }
 }
