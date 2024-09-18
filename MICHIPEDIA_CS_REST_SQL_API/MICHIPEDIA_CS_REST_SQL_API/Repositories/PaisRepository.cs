@@ -19,10 +19,10 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Repositories
                 "SELECT pais_uuid uuid, nombre, continente " +
                 "FROM core.paises ORDER BY continente, nombre";
 
-            var resultadoDepartamentos = await conexion
+            var resultadoPaises = await conexion
                 .QueryAsync<Pais>(sentenciaSQL, new DynamicParameters());
 
-            return resultadoDepartamentos.ToList();
+            return resultadoPaises.ToList();
         }
 
         public async Task<Pais> GetByGuidAsync(Guid pais_guid)
