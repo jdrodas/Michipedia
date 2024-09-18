@@ -2,6 +2,7 @@
 using MICHIPEDIA_CS_REST_SQL_API.DbContexts;
 using MICHIPEDIA_CS_REST_SQL_API.Interfaces;
 using MICHIPEDIA_CS_REST_SQL_API.Models;
+using System.Data;
 
 namespace MICHIPEDIA_CS_REST_SQL_API.Repositories
 {
@@ -21,6 +22,31 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Repositories
                 .QueryAsync<Raza>(sentenciaSQL, new DynamicParameters());
 
             return resultadoRazas.ToList();
+        }
+
+        public async Task<Raza> GetByGuidAsync(Guid raza_guid)
+        {
+            Raza unaRaza= new();
+
+            var conexion = contextoDB.CreateConnection();
+
+            DynamicParameters parametrosSentencia = new();
+            parametrosSentencia.Add("@raza_guid", raza_guid,
+                                    DbType.Guid, ParameterDirection.Input);
+
+            string sentenciaSQL =
+                "SELECT DISTINCT raza_uuid uuid, nombre, descripcion, pais " +
+                "FROM v_info_razas " +
+                "WHERE raza_uuid = @raza_guid ";
+
+
+            var resultado = await conexion.QueryAsync<Raza>(sentenciaSQL,
+                parametrosSentencia);
+
+            if (resultado.Any())
+                unaRaza = resultado.First();
+
+            return unaRaza;
         }
     }
 }

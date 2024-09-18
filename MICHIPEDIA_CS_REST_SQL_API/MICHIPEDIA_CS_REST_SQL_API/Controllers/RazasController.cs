@@ -1,4 +1,5 @@
-﻿using MICHIPEDIA_CS_REST_SQL_API.Services;
+﻿using MICHIPEDIA_CS_REST_SQL_API.Exceptions;
+using MICHIPEDIA_CS_REST_SQL_API.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MICHIPEDIA_CS_REST_SQL_API.Controllers
@@ -16,6 +17,22 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Controllers
                 .GetAllAsync();
 
             return Ok(lasRazas);
+        }
+
+        [HttpGet("{raza_guid:Guid}")]
+        public async Task<IActionResult> GetByGuidAsync(Guid raza_guid)
+        {
+            try
+            {
+                var unaRaza = await _razaService
+                    .GetByGuidAsync(raza_guid);
+
+                return Ok(unaRaza);
+            }
+            catch (AppValidationException error)
+            {
+                return NotFound(error.Message);
+            }
         }
     }
 }
