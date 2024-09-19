@@ -34,5 +34,21 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Controllers
                 return NotFound(error.Message);
             }
         }
+
+        [HttpGet("{pais_guid:Guid}/Razas")]
+        public async Task<IActionResult> GetBreedsAsync(Guid pais_guid)
+        {
+            try
+            {
+                var lasRazasAsociadas = await _paisService
+                    .GetBreedsAsync(pais_guid);
+
+                return Ok(lasRazasAsociadas);
+            }
+            catch (AppValidationException error)
+            {
+                return NotFound(error.Message);
+            }
+        }
     }
 }

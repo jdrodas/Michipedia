@@ -196,15 +196,15 @@ create or replace view core.v_info_caracteristicas_razas as
         inner join caracteristicas c on cr.caracteristica_id = c.id
 );
 
--- Vista v_info_razas_paises
-create or replace view core.v_info_razas_paises as
+-- Vista v_info_razas
+create or replace view core.v_info_razas as
 (
 select distinct
-    r.id raza_id,
-    r.nombre raza_nombre,
-    r.pais_id,
-    p.nombre pais_nombre,
-    p.continente pais_continente
-    from core.razas r
-        inner join core.paises p on p.id = r.pais_id
+    r.raza_uuid,
+    r.nombre,
+    r.descripcion,
+    (p.nombre || ' - ' || p.continente) pais,
+    p.pais_uuid
+from razas r
+         join paises p on r.pais_id = p.id
 );

@@ -48,5 +48,30 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Repositories
 
             return unaRaza;
         }
+
+        public async Task<List<Raza>> GetByCountryAsync(Guid pais_guid)
+        {
+            List<Raza> razasAsociadas = [];
+
+            var conexion = contextoDB.CreateConnection();
+
+            DynamicParameters parametrosSentencia = new();
+            parametrosSentencia.Add("@pais_guid", pais_guid,
+                                    DbType.Guid, ParameterDirection.Input);
+
+            string sentenciaSQL =
+                "SELECT DISTINCT raza_uuid uuid, nombre, descripcion, pais " +
+                "FROM v_info_razas " +
+                "WHERE pais_uuid = @pais_guid " +
+                "ORDER BY nombre";
+
+            var resultadoRazas = await conexion
+                .QueryAsync<Raza>(sentenciaSQL, parametrosSentencia);
+
+            if (resultadoRazas.Any())
+                razasAsociadas = resultadoRazas.ToList();
+
+            return razasAsociadas;
+        }
     }
 }
