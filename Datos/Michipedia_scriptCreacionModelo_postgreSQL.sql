@@ -186,11 +186,13 @@ create or replace view core.v_info_caracteristicas_razas as
 (
     select distinct
         cr.raza_id,
-        r.nombre,
-        r.descripcion,
+        r.nombre raza_nombre,
+        r.descripcion raza_descripcion,
         r.raza_uuid,
+        c.caracteristica_uuid,
         c.nombre caracteristica_nombre,
-        c.descripcion caracteristica_descripcion
+        c.descripcion caracteristica_descripcion,
+        cr.descripcion caracteristica_valoracion
     from razas r
         inner join caracteristicas_razas cr on r.id = cr.raza_id
         inner join caracteristicas c on cr.caracteristica_id = c.id
