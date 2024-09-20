@@ -210,3 +210,21 @@ select distinct
 from razas r
          join paises p on r.pais_id = p.id
 );
+
+-- Vista: v_info_comportamientos_razas
+create or replace view core.v_info_comportamientos_razas as
+(
+select distinct
+    r.id raza_id,
+    r.nombre raza_nombre,
+    r.descripcion raza_descripcion,
+    r.raza_uuid,
+    cnr.comportamiento_nivel_id,
+    v.comportamiento_nombre,
+    v.comportamiento_descripcion,
+    v.nivel_nombre,
+    v.nivel_valoracion
+from core.razas r
+    join core.comportamientos_niveles_razas cnr on r.id = cnr.raza_id
+    join v_info_comportamientos v on cnr.comportamiento_nivel_id = v.nivel_id
+);

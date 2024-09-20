@@ -8,5 +8,6 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Interfaces
         public Task<Raza> GetByGuidAsync(Guid raza_guid);
         public Task<List<Raza>> GetByCountryAsync(Guid pais_guid);
         public Task<RazaCaracterizada> GetCharacterizedBreedByGuidAsync(Guid raza_guid);
+        public Task<RazaDetallada> GetDetailedBreedByGuidAsync(Guid raza_guid);
     }
 }

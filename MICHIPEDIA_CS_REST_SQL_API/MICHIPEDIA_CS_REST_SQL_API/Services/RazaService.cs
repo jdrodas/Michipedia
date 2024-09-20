@@ -15,7 +15,7 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Services
                 .GetAllAsync();
         }
 
-        public async Task<RazaCaracterizada> GetByGuidAsync(Guid raza_guid)
+        public async Task<RazaDetallada> GetByGuidAsync(Guid raza_guid)
         {
             Raza unaRaza = await _razaRepository
                 .GetByGuidAsync(raza_guid);
@@ -23,10 +23,10 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Services
             if (unaRaza.Uuid == Guid.Empty)
                 throw new AppValidationException($"Raza no encontrada con el guid {raza_guid}");
 
-            RazaCaracterizada unaRazaCaracterizada = await _razaRepository
-                .GetCharacterizedBreedByGuidAsync(raza_guid);
+            RazaDetallada unaRazaDetallada = await _razaRepository
+                .GetDetailedBreedByGuidAsync(raza_guid);
 
-            return unaRazaCaracterizada;
+            return unaRazaDetallada;
         }
     }
 }

@@ -90,7 +90,25 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Repositories
             return unaRazaCaracterizada;
         }
 
-        public async Task<List<Caracteristica>> GetCharacteristicsDetailsAsync(Guid raza_guid)
+        public async Task<RazaDetallada> GetDetailedBreedByGuidAsync(Guid raza_guid)
+        {
+            Raza unaRaza = await GetByGuidAsync(raza_guid);
+
+            RazaDetallada unaRazaDetallada = new()
+            {
+                Uuid = unaRaza.Uuid,
+                Nombre = unaRaza.Nombre,
+                Descripcion = unaRaza.Descripcion,
+                Pais = unaRaza.Pais,
+                Caracteristicas = await GetCharacteristicsDetailsAsync(raza_guid),
+                Comportamientos = await GetBehaviorsDetailsAsync(raza_guid)
+            };
+
+            return unaRazaDetallada;
+        }
+
+
+        private async Task<List<Caracteristica>> GetCharacteristicsDetailsAsync(Guid raza_guid)
         {
             List<Caracteristica> infoCaracteristicas = [];
 
@@ -114,6 +132,34 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Repositories
                 infoCaracteristicas = resultado.ToList();
 
             return infoCaracteristicas;
+        }
+
+        private async Task<List<Comportamiento>> GetBehaviorsDetailsAsync(Guid raza_guid)
+        {
+            List<Comportamiento> infoComportamientos = [];
+
+            var conexion = contextoDB.CreateConnection();
+
+            DynamicParameters parametrosSentencia = new();
+            parametrosSentencia.Add("@raza_guid", raza_guid,
+                                    DbType.Guid, ParameterDirection.Input);
+
+            string sentenciaSQL =
+                "SELECT DISTINCT comportamiento_nombre nombre, " +
+                "comportamiento_descripcion descripcion, " +
+                "nivel_nombre nivel, " +
+                "nivel_valoracion valoracion " +
+                "FROM v_info_comportamientos_razas " +
+                "WHERE raza_uuid = @raza_guid " +
+                "ORDER BY comportamiento_nombre";
+
+            var resultado = await conexion
+                .QueryAsync<Comportamiento>(sentenciaSQL, parametrosSentencia);
+
+            if (resultado.Any())
+                infoComportamientos = resultado.ToList();
+
+            return infoComportamientos;
         }
     }
 }
