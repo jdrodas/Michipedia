@@ -3,7 +3,6 @@ using MICHIPEDIA_CS_REST_SQL_API.DbContexts;
 using MICHIPEDIA_CS_REST_SQL_API.Interfaces;
 using MICHIPEDIA_CS_REST_SQL_API.Models;
 using System.Data;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MICHIPEDIA_CS_REST_SQL_API.Repositories
 {
@@ -15,7 +14,7 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Repositories
         {
             var conexion = contextoDB.CreateConnection();
 
-            string sentenciaSQL = 
+            string sentenciaSQL =
                 "SELECT pais_uuid uuid, nombre, continente " +
                 "FROM core.paises ORDER BY continente, nombre";
 

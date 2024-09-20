@@ -1,7 +1,6 @@
 ﻿using MICHIPEDIA_CS_REST_SQL_API.Exceptions;
 using MICHIPEDIA_CS_REST_SQL_API.Interfaces;
 using MICHIPEDIA_CS_REST_SQL_API.Models;
-using MICHIPEDIA_CS_REST_SQL_API.Repositories;
 
 namespace MICHIPEDIA_CS_REST_SQL_API.Services
 {

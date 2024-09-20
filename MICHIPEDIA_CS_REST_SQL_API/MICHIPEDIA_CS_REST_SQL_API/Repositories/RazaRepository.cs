@@ -26,7 +26,7 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Repositories
 
         public async Task<Raza> GetByGuidAsync(Guid raza_guid)
         {
-            Raza unaRaza= new();
+            Raza unaRaza = new();
 
             var conexion = contextoDB.CreateConnection();
 
@@ -108,9 +108,9 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Repositories
         }
 
 
-        private async Task<List<Caracteristica>> GetCharacteristicsDetailsAsync(Guid raza_guid)
+        private async Task<List<CaracteristicaSimplificada>> GetCharacteristicsDetailsAsync(Guid raza_guid)
         {
-            List<Caracteristica> infoCaracteristicas = [];
+            List<CaracteristicaSimplificada> infoCaracteristicas = [];
 
             var conexion = contextoDB.CreateConnection();
 
@@ -118,7 +118,7 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Repositories
             parametrosSentencia.Add("@raza_guid", raza_guid,
                                     DbType.Guid, ParameterDirection.Input);
 
-            string sentenciaSQL = 
+            string sentenciaSQL =
                 "SELECT DISTINCT caracteristica_nombre nombre, caracteristica_descripcion descripcion, " +
                 "caracteristica_valoracion valoracion " +
                 "FROM v_info_caracteristicas_razas " +
@@ -126,7 +126,7 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Repositories
                 "ORDER BY caracteristica_nombre ";
 
             var resultado = await conexion
-                .QueryAsync<Caracteristica>(sentenciaSQL, parametrosSentencia);
+                .QueryAsync<CaracteristicaSimplificada>(sentenciaSQL, parametrosSentencia);
 
             if (resultado.Any())
                 infoCaracteristicas = resultado.ToList();
