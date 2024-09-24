@@ -228,3 +228,19 @@ from core.razas r
     join core.comportamientos_niveles_razas cnr on r.id = cnr.raza_id
     join v_info_comportamientos v on cnr.comportamiento_nivel_id = v.nivel_id
 );
+
+
+-- ----------------------------
+-- Creación de Procedimientos
+-- ----------------------------
+-- p_insertar_pais
+create or replace procedure core.p_insertar_pais(
+                            in p_nombre                 text,
+                            in p_continente             text)
+    language plpgsql as
+$$
+    begin 
+        insert into core.paises(nombre, continente)
+        values (p_nombre, p_continente);
+    end;
+$$;
