@@ -51,19 +51,18 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Services
             if (!string.IsNullOrEmpty(resultadoValidacionDatos))
                 throw new AppValidationException(resultadoValidacionDatos);
 
+            var continenteExistente = await _paisRepository
+                .GetContinentByNameAsync(unPais.Continente!);
+
+            if (string.IsNullOrEmpty(continenteExistente))
+                throw new AppValidationException($"'No existe un continente {unPais.Continente} registrado previamente");
+
             var paisExistente = await _paisRepository
                 .GetCountryByNameAndContinentAsync(unPais);
 
             if (paisExistente.Uuid != Guid.Empty)
                 throw new AppValidationException($"Ya existe el pais {unPais.Nombre} " +
                     $"ubicado en el continente {unPais.Continente}");
-
-            //TODO: Crear una validación sobre la existencia del continente
-            //string continenteExistente = await _paisRepository
-            //    .GetContinentByNameAsync(unPais.Continente!);
-
-            //if (continenteExistente == string.Empty)
-            //    throw new AppValidationException($"El continente {unPais.Continente} no se encuentra registrado");
 
             try
             {
@@ -75,6 +74,45 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Services
 
                 paisExistente = await _paisRepository
                     .GetCountryByNameAndContinentAsync(unPais);
+            }
+            catch (DbOperationException)
+            {
+                throw;
+            }
+
+            return paisExistente;
+        }
+
+        public async Task<Pais> UpdateAsync(Pais unPais)
+        {
+            string resultadoValidacionDatos = ValidaDatos(unPais);
+
+            if (!string.IsNullOrEmpty(resultadoValidacionDatos))
+                throw new AppValidationException(resultadoValidacionDatos);
+
+            var continenteExistente = await _paisRepository
+                .GetContinentByNameAsync(unPais.Continente!);
+
+            if (string.IsNullOrEmpty(continenteExistente))
+                throw new AppValidationException($"'No existe un continente {unPais.Continente} registrado previamente");
+
+            var paisExistente = await _paisRepository
+                .GetCountryByNameAndContinentAsync(unPais);
+
+            if (paisExistente.Uuid != Guid.Empty && paisExistente.Uuid != unPais.Uuid)
+                throw new AppValidationException($"Ya existe el pais {unPais.Nombre} " +
+                    $"ubicado en el continente {unPais.Continente}");
+
+            try
+            {
+                bool resultadoAccion = await _paisRepository
+                    .UpdateAsync(unPais);
+
+                if (!resultadoAccion)
+                    throw new AppValidationException("Operación ejecutada pero no generó cambios en la DB");
+
+                paisExistente = await _paisRepository
+                    .GetByGuidAsync(unPais.Uuid);
             }
             catch (DbOperationException)
             {

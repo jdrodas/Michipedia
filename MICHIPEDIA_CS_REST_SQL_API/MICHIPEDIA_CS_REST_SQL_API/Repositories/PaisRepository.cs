@@ -89,7 +89,7 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Repositories
                                     DbType.String, ParameterDirection.Input);
 
             string sentenciaSQL =
-                "SELECT distinct continente" +
+                "SELECT distinct continente " +
                 "FROM core.v_info_continentes " +
                 "WHERE LOWER(continente) = LOWER(@continente_nombre)";
 
@@ -126,6 +126,43 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Repositories
                         commandType: CommandType.StoredProcedure);
 
                 if (cantidadFilas != 0)
+                    resultadoAccion = true;
+            }
+            catch (NpgsqlException error)
+            {
+                throw new DbOperationException(error.Message);
+            }
+
+            return resultadoAccion;
+        }
+
+        public async Task<bool> UpdateAsync(Pais unPais)
+        {
+            bool resultadoAccion = false;
+
+            var frutaExistente = await GetByGuidAsync(unPais.Uuid);
+
+            if (frutaExistente.Uuid == Guid.Empty)
+                throw new DbOperationException($"No se puede actualizar. No existe la fruta {unPais.Nombre!}.");
+
+            try
+            {
+                var conexion = contextoDB.CreateConnection();
+
+                string procedimiento = "core.p_actualizar_pais";
+                var parametros = new
+                {
+                    p_uuid = unPais.Uuid,
+                    p_nombre = unPais.Nombre,
+                    p_continente = unPais.Continente
+                };
+
+                var cantidad_filas = await conexion.ExecuteAsync(
+                    procedimiento,
+                    parametros,
+                    commandType: CommandType.StoredProcedure);
+
+                if (cantidad_filas != 0)
                     resultadoAccion = true;
             }
             catch (NpgsqlException error)

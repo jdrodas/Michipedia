@@ -239,8 +239,90 @@ create or replace procedure core.p_insertar_pais(
                             in p_continente             text)
     language plpgsql as
 $$
-    begin 
+    declare
+        l_total_registros integer;
+
+    begin
+        if p_nombre is null or
+           p_continente is null or
+           length(p_nombre) = 0 or
+           length(p_continente) = 0 then
+               raise exception 'El nombre del pais o el continente no pueden ser nulos';
+        end if;
+
+        -- Validación de cantidad de registros con ese continente
+        select count(id) into l_total_registros
+        from core.paises
+        where lower(continente) = lower(p_continente);
+
+        if l_total_registros = 0  then
+            raise exception 'No existe un continente registrado con ese nombre';
+        end if;
+
+        -- Validación de cantidad de paises con ese nombre
+        select count(id) into l_total_registros
+        from core.paises
+        where lower(nombre) = lower(p_nombre)
+        and initcap(continente) = initcap(p_continente);
+
+        if l_total_registros > 0  then
+            raise exception 'Ya existe un país registrado con ese nombre';
+        end if;
+
         insert into core.paises(nombre, continente)
-        values (p_nombre, p_continente);
+        values (initcap(p_nombre), initcap(p_continente));
+    end;
+$$;
+
+
+-- p_actualizar_pais
+create or replace procedure core.p_actualizar_pais(
+                            in p_uuid           uuid,
+                            in p_nombre         text,
+                            in p_continente     text)
+    language plpgsql as
+$$
+    declare
+        l_total_registros integer;
+
+    begin
+        select count(id) into l_total_registros
+        from core.paises
+        where pais_uuid = p_uuid;
+
+        if l_total_registros = 0  then
+            raise exception 'No existe un país registrado con ese Guid';
+        end if;
+
+        if p_nombre is null or
+           p_continente is null or
+           length(p_nombre) = 0 or
+           length(p_continente) = 0 then
+               raise exception 'El nombre del pais o el continente no pueden ser nulos';
+        end if;
+
+        -- Validación de cantidad de registros con ese continente
+        select count(id) into l_total_registros
+        from core.paises
+        where lower(continente) = lower(p_continente);
+
+        if l_total_registros = 0  then
+            raise exception 'No existe un continente registrado con ese nombre';
+        end if;
+
+        -- Validación de cantidad de paises con ese nombre
+        select count(id) into l_total_registros
+        from core.paises
+        where lower(nombre) = lower(p_nombre)
+        and lower(continente) = lower(p_continente)
+        and pais_uuid != p_uuid;
+
+        if l_total_registros > 0  then
+            raise exception 'Ya existe un país registrado con ese nombre';
+        end if;
+
+        update core.paises
+        set nombre = initcap(p_nombre), continente = initcap(p_continente)
+        where pais_uuid = p_uuid;
     end;
 $$;

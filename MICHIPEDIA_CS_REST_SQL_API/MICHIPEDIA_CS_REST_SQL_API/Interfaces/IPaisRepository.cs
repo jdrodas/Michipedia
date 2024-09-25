@@ -9,5 +9,6 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Interfaces
         public Task<Pais> GetCountryByNameAndContinentAsync(Pais unPais);
         public Task<string> GetContinentByNameAsync(string continente_nombre);
         public Task<bool> CreateAsync(Pais unPais);
+        public Task<bool> UpdateAsync(Pais unPais);
     }
 }

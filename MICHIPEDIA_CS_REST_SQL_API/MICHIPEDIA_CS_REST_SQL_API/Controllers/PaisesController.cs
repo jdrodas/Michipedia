@@ -71,5 +71,25 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Controllers
                 return BadRequest($"Error en la operación de la DB {error.Message}");
             }
         }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateAsync(Pais unPais)
+        {
+            try
+            {
+                var paisActualizado = await _paisService
+                    .UpdateAsync(unPais);
+
+                return Ok(unPais);
+            }
+            catch (AppValidationException error)
+            {
+                return BadRequest($"Error de validación: {error.Message}");
+            }
+            catch (DbOperationException error)
+            {
+                return BadRequest($"Error de operacion en DB: {error.Message}");
+            }
+        }
     }
 }
