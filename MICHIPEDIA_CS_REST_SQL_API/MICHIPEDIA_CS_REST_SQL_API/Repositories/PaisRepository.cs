@@ -102,6 +102,25 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Repositories
             return nombreContinente;
         }
 
+        public async Task<int> GetTotalAssociatedBreedsByCountryGuidAsync(Guid pais_guid)
+        {
+            var conexion = contextoDB.CreateConnection();
+
+            DynamicParameters parametrosSentencia = new();
+            parametrosSentencia.Add("@pais_guid", pais_guid,
+                                    DbType.Guid, ParameterDirection.Input);
+
+            //Aqui colocamos la informacion nutricional
+            string sentenciaSQL = "SELECT count(*) totalRegistros " +
+                "FROM core.v_info_razas " +
+                "WHERE pais_uuid = @pais_guid";
+
+            var totalRegistros = await conexion
+                .QueryAsync<int>(sentenciaSQL, parametrosSentencia);
+
+            return totalRegistros.FirstOrDefault();
+        }
+
 
         public async Task<bool> CreateAsync(Pais unPais)
         {
@@ -140,9 +159,9 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Repositories
         {
             bool resultadoAccion = false;
 
-            var frutaExistente = await GetByGuidAsync(unPais.Uuid);
+            var paisExistente = await GetByGuidAsync(unPais.Uuid);
 
-            if (frutaExistente.Uuid == Guid.Empty)
+            if (paisExistente.Uuid == Guid.Empty)
                 throw new DbOperationException($"No se puede actualizar. No existe la fruta {unPais.Nombre!}.");
 
             try
@@ -155,6 +174,37 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Repositories
                     p_uuid = unPais.Uuid,
                     p_nombre = unPais.Nombre,
                     p_continente = unPais.Continente
+                };
+
+                var cantidad_filas = await conexion.ExecuteAsync(
+                    procedimiento,
+                    parametros,
+                    commandType: CommandType.StoredProcedure);
+
+                if (cantidad_filas != 0)
+                    resultadoAccion = true;
+            }
+            catch (NpgsqlException error)
+            {
+                throw new DbOperationException(error.Message);
+            }
+
+            return resultadoAccion;
+        }
+
+        public async Task<bool> RemoveAsync(Guid pais_guid)
+        {
+            bool resultadoAccion = false;
+
+            try
+            {
+
+                var conexion = contextoDB.CreateConnection();
+
+                string procedimiento = "core.p_eliminar_pais";
+                var parametros = new
+                {
+                    p_uuid = pais_guid
                 };
 
                 var cantidad_filas = await conexion.ExecuteAsync(

@@ -326,3 +326,36 @@ $$
         where pais_uuid = p_uuid;
     end;
 $$;
+
+
+-- p_eliminar_pais
+create or replace procedure core.p_eliminar_pais(
+                            in p_uuid           uuid)
+    language plpgsql as
+$$
+    declare
+        l_total_registros integer;
+
+    begin
+
+        select count(id) into l_total_registros
+        from core.paises
+        where pais_uuid = p_uuid;
+
+        if l_total_registros = 0  then
+            raise exception 'No existe un pais registrado con ese Guid';
+        end if;
+
+        select count(raza_uuid) into l_total_registros
+        from core.v_info_razas
+        where pais_uuid = p_uuid;
+
+        if l_total_registros != 0  then
+            raise exception 'No se puede eliminar, hay razas que dependen de este pais.';
+        end if;
+
+        delete from core.paises
+        where pais_uuid = p_uuid;
+
+    end;
+$$;

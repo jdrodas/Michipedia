@@ -122,6 +122,38 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Services
             return paisExistente;
         }
 
+        public async Task<Pais> RemoveAsync(Guid pais_guid)
+        {
+            var paisExistente = await _paisRepository
+                .GetByGuidAsync(pais_guid);
+
+            if (paisExistente.Uuid == Guid.Empty)
+                throw new AppValidationException($"No existe un pais identificado con el Guid {pais_guid} registrado previamente");
+
+            //TODO: Validar previamente que no tenga razas asociadas.
+            int totalRazasAsociadas = await _paisRepository
+                .GetTotalAssociatedBreedsByCountryGuidAsync(pais_guid);
+
+            if (totalRazasAsociadas != 0)
+                throw new AppValidationException($"Pais {paisExistente.Nombre} tiene asociado {totalRazasAsociadas} razas. No se puede eliminar.");
+
+            try
+            {
+                bool resultadoAccion = await _paisRepository
+                    .RemoveAsync(pais_guid);
+
+                if (!resultadoAccion)
+                    throw new AppValidationException("Operación ejecutada pero no generó cambios en la DB");
+            }
+            catch (DbOperationException)
+            {
+                throw;
+            }
+
+            return paisExistente;
+
+        }
+
         private static string ValidaDatos(Pais unPais)
         {
             if (string.IsNullOrEmpty(unPais.Nombre))

@@ -91,5 +91,25 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Controllers
                 return BadRequest($"Error de operacion en DB: {error.Message}");
             }
         }
+
+        [HttpDelete]
+        public async Task<IActionResult> RemoveAsync(Guid pais_guid)
+        {
+            try
+            {
+                var paisEliminado = await _paisService
+                    .RemoveAsync(pais_guid);
+
+                return Ok(paisEliminado);
+            }
+            catch (AppValidationException error)
+            {
+                return BadRequest($"Error de validación: {error.Message}");
+            }
+            catch (DbOperationException error)
+            {
+                return BadRequest($"Error de operacion en DB: {error.Message}");
+            }
+        }
     }
 }
