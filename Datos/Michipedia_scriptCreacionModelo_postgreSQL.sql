@@ -359,3 +359,19 @@ $$
 
     end;
 $$;
+
+
+-- p_insertar_raza
+create or replace procedure core.p_insertar_raza(
+                            in p_nombre                 text,
+                            in p_pais_id                integer,
+                            in p_descripcion            text)
+    language plpgsql as
+$$
+
+    begin
+
+        insert into core.razas(nombre, pais_id, descripcion)
+        values (initcap(p_nombre), p_pais_id,  initcap(p_descripcion));
+    end;
+$$;

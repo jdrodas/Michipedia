@@ -1,4 +1,5 @@
 ﻿using MICHIPEDIA_CS_REST_SQL_API.Exceptions;
+using MICHIPEDIA_CS_REST_SQL_API.Models;
 using MICHIPEDIA_CS_REST_SQL_API.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,6 +33,26 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Controllers
             catch (AppValidationException error)
             {
                 return NotFound(error.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateAsync(Raza unaRaza)
+        {
+            try
+            {
+                var razaCreada = await _razaService
+                    .CreateAsync(unaRaza);
+
+                return Ok(razaCreada);
+            }
+            catch (AppValidationException error)
+            {
+                return BadRequest($"Error en la validación: {error.Message}");
+            }
+            catch (DbOperationException error)
+            {
+                return BadRequest($"Error en la operación de la DB {error.Message}");
             }
         }
     }

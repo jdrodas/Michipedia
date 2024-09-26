@@ -130,7 +130,6 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Services
             if (paisExistente.Uuid == Guid.Empty)
                 throw new AppValidationException($"No existe un pais identificado con el Guid {pais_guid} registrado previamente");
 
-            //TODO: Validar previamente que no tenga razas asociadas.
             int totalRazasAsociadas = await _paisRepository
                 .GetTotalAssociatedBreedsByCountryGuidAsync(pais_guid);
 

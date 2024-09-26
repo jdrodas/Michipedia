@@ -78,6 +78,21 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Repositories
             return paisExistente;
         }
 
+        public async Task<Pais> GetCountryByNameAndContinentAsync(string pais_continente)
+        {
+            string[] datosPais = pais_continente.Split('-');
+
+            Pais paisBuscado = new()
+            {
+                Nombre = datosPais[0].Trim(),
+                Continente = datosPais[1].Trim()
+            };
+
+            var paisExistente = await GetCountryByNameAndContinentAsync(paisBuscado);
+
+            return paisExistente;
+        }
+
         public async Task<string> GetContinentByNameAsync(string continente_nombre)
         {
             string nombreContinente = string.Empty;
