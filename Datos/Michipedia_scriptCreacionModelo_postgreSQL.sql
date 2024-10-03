@@ -372,6 +372,6 @@ $$
     begin
 
         insert into core.razas(nombre, pais_id, descripcion)
-        values (initcap(p_nombre), p_pais_id,  initcap(p_descripcion));
+        values (p_nombre, p_pais_id,  p_descripcion);
     end;
 $$;

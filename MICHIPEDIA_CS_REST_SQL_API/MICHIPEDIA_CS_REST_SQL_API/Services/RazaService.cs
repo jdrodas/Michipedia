@@ -39,7 +39,6 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Services
             if (!string.IsNullOrEmpty(resultadoValidacionDatos))
                 throw new AppValidationException(resultadoValidacionDatos);
 
-            //TODO: Validar la existencia del Pais
             var paisExistente = await _paisRepository
                 .GetCountryByNameAndContinentAsync(unaRaza.Pais!);
 
