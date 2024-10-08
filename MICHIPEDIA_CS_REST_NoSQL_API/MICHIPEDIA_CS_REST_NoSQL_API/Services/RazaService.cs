@@ -1,9 +1,9 @@
-﻿using MICHIPEDIA_CS_REST_SQL_API.Exceptions;
-using MICHIPEDIA_CS_REST_SQL_API.Interfaces;
-using MICHIPEDIA_CS_REST_SQL_API.Models;
-using MICHIPEDIA_CS_REST_SQL_API.Repositories;
+﻿using MICHIPEDIA_CS_REST_NoSQL_API.Exceptions;
+using MICHIPEDIA_CS_REST_NoSQL_API.Interfaces;
+using MICHIPEDIA_CS_REST_NoSQL_API.Models;
+using MICHIPEDIA_CS_REST_NoSQL_API.Repositories;
 
-namespace MICHIPEDIA_CS_REST_SQL_API.Services
+namespace MICHIPEDIA_CS_REST_NoSQL_API.Services
 {
     public class RazaService(IRazaRepository razaRepository, 
                             IPaisRepository paisRepository)

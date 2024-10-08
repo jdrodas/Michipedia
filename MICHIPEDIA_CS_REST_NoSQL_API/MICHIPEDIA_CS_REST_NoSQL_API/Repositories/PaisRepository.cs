@@ -1,241 +1,231 @@
-﻿using Dapper;
-using MICHIPEDIA_CS_REST_SQL_API.DbContexts;
-using MICHIPEDIA_CS_REST_SQL_API.Exceptions;
-using MICHIPEDIA_CS_REST_SQL_API.Interfaces;
-using MICHIPEDIA_CS_REST_SQL_API.Models;
-using Npgsql;
+﻿using MICHIPEDIA_CS_REST_NoSQL_API.DbContexts;
+using MICHIPEDIA_CS_REST_NoSQL_API.Exceptions;
+using MICHIPEDIA_CS_REST_NoSQL_API.Interfaces;
+using MICHIPEDIA_CS_REST_NoSQL_API.Models;
+using MongoDB.Driver;
 using System.Data;
 
-namespace MICHIPEDIA_CS_REST_SQL_API.Repositories
+namespace MICHIPEDIA_CS_REST_NoSQL_API.Repositories
 {
-    public class PaisRepository(PgsqlDbContext unContexto) : IPaisRepository
+    public class PaisRepository(MongoDbContext unContexto) : IPaisRepository
     {
-        private readonly PgsqlDbContext contextoDB = unContexto;
+        private readonly MongoDbContext contextoDB = unContexto;
 
-        public async Task<List<Pais>> GetAllAsync()
+        public async Task<IEnumerable<Pais>> GetAllAsync()
         {
             var conexion = contextoDB.CreateConnection();
+            var coleccionPaises = conexion.GetCollection<Pais>(contextoDB.ConfiguracionColecciones.ColeccionPaises);
 
-            string sentenciaSQL =
-                "SELECT pais_uuid uuid, nombre, continente " +
-                "FROM core.paises ORDER BY continente, nombre";
+            var losPaises = await coleccionPaises
+                .Find(_ => true)
+                .SortBy(pais => pais.Nombre)
+                .ToListAsync();
 
-            var resultadoPaises = await conexion
-                .QueryAsync<Pais>(sentenciaSQL, new DynamicParameters());
-
-            return resultadoPaises.ToList();
+            return losPaises;
         }
 
-        public async Task<Pais> GetByGuidAsync(Guid pais_guid)
+        public async Task<Pais> GetByIdAsync(string pais_id)
         {
-            Pais unPais = new();
+            Pais unPais= new();
 
             var conexion = contextoDB.CreateConnection();
+            var coleccionPaises = conexion.GetCollection<Pais>(contextoDB.ConfiguracionColecciones.ColeccionPaises);
 
-            DynamicParameters parametrosSentencia = new();
-            parametrosSentencia.Add("@pais_guid", pais_guid,
-                                    DbType.Guid, ParameterDirection.Input);
+            var resultado = await coleccionPaises
+                .Find(pais => pais.Id == pais_id)
+                .FirstOrDefaultAsync();
 
-            string sentenciaSQL =
-                "SELECT pais_uuid uuid, nombre, continente " +
-                "FROM core.paises " +
-                "WHERE pais_uuid = @pais_guid ";
-
-
-            var resultado = await conexion.QueryAsync<Pais>(sentenciaSQL,
-                parametrosSentencia);
-
-            if (resultado.Any())
-                unPais = resultado.First();
+            if (resultado is not null)
+                unPais = resultado;            
 
             return unPais;
         }
 
-        public async Task<Pais> GetCountryByNameAndContinentAsync(Pais unPais)
-        {
-            Pais paisExistente = new();
+        //public async Task<Pais> GetCountryByNameAndContinentAsync(Pais unPais)
+        //{
+        //    Pais paisExistente = new();
 
-            var conexion = contextoDB.CreateConnection();
+        //    var conexion = contextoDB.CreateConnection();
 
-            DynamicParameters parametrosSentencia = new();
-            parametrosSentencia.Add("@pais_nombre", unPais.Nombre,
-                                    DbType.String, ParameterDirection.Input);
-            parametrosSentencia.Add("@pais_continente", unPais.Continente,
-                                    DbType.String, ParameterDirection.Input);
+        //    DynamicParameters parametrosSentencia = new();
+        //    parametrosSentencia.Add("@pais_nombre", unPais.Nombre,
+        //                            DbType.String, ParameterDirection.Input);
+        //    parametrosSentencia.Add("@pais_continente", unPais.Continente,
+        //                            DbType.String, ParameterDirection.Input);
 
-            string sentenciaSQL =
-                "SELECT pais_uuid uuid, nombre, continente " +
-                "FROM core.paises " +
-                "WHERE LOWER(nombre) = LOWER(@pais_nombre) " +
-                "AND LOWER(continente) = LOWER(@pais_continente)";
+        //    string sentenciaSQL =
+        //        "SELECT pais_uuid uuid, nombre, continente " +
+        //        "FROM core.paises " +
+        //        "WHERE LOWER(nombre) = LOWER(@pais_nombre) " +
+        //        "AND LOWER(continente) = LOWER(@pais_continente)";
 
-            var resultado = await conexion.QueryAsync<Pais>(sentenciaSQL,
-                parametrosSentencia);
+        //    var resultado = await conexion.QueryAsync<Pais>(sentenciaSQL,
+        //        parametrosSentencia);
 
-            if (resultado.Any())
-                paisExistente = resultado.First();
+        //    if (resultado.Any())
+        //        paisExistente = resultado.First();
 
-            return paisExistente;
-        }
+        //    return paisExistente;
+        //}
 
-        public async Task<Pais> GetCountryByNameAndContinentAsync(string pais_continente)
-        {
-            string[] datosPais = pais_continente.Split('-');
+        //public async Task<Pais> GetCountryByNameAndContinentAsync(string pais_continente)
+        //{
+        //    string[] datosPais = pais_continente.Split('-');
 
-            Pais paisBuscado = new()
-            {
-                Nombre = datosPais[0].Trim(),
-                Continente = datosPais[1].Trim()
-            };
+        //    Pais paisBuscado = new()
+        //    {
+        //        Nombre = datosPais[0].Trim(),
+        //        Continente = datosPais[1].Trim()
+        //    };
 
-            var paisExistente = await GetCountryByNameAndContinentAsync(paisBuscado);
+        //    var paisExistente = await GetCountryByNameAndContinentAsync(paisBuscado);
 
-            return paisExistente;
-        }
+        //    return paisExistente;
+        //}
 
-        public async Task<string> GetContinentByNameAsync(string continente_nombre)
-        {
-            string nombreContinente = string.Empty;
+        //public async Task<string> GetContinentByNameAsync(string continente_nombre)
+        //{
+        //    string nombreContinente = string.Empty;
 
-            var conexion = contextoDB.CreateConnection();
+        //    var conexion = contextoDB.CreateConnection();
 
-            DynamicParameters parametrosSentencia = new();
-            parametrosSentencia.Add("@continente_nombre", continente_nombre,
-                                    DbType.String, ParameterDirection.Input);
+        //    DynamicParameters parametrosSentencia = new();
+        //    parametrosSentencia.Add("@continente_nombre", continente_nombre,
+        //                            DbType.String, ParameterDirection.Input);
 
-            string sentenciaSQL =
-                "SELECT distinct continente " +
-                "FROM core.v_info_continentes " +
-                "WHERE LOWER(continente) = LOWER(@continente_nombre)";
+        //    string sentenciaSQL =
+        //        "SELECT distinct continente " +
+        //        "FROM core.v_info_continentes " +
+        //        "WHERE LOWER(continente) = LOWER(@continente_nombre)";
 
-            var resultado = await conexion.QueryAsync<string>(sentenciaSQL,
-                parametrosSentencia);
+        //    var resultado = await conexion.QueryAsync<string>(sentenciaSQL,
+        //        parametrosSentencia);
 
-            if (resultado.Any())
-                nombreContinente = resultado.First();
+        //    if (resultado.Any())
+        //        nombreContinente = resultado.First();
 
-            return nombreContinente;
-        }
+        //    return nombreContinente;
+        //}
 
-        public async Task<int> GetTotalAssociatedBreedsByCountryGuidAsync(Guid pais_guid)
-        {
-            var conexion = contextoDB.CreateConnection();
+        //public async Task<int> GetTotalAssociatedBreedsByCountryGuidAsync(Guid pais_guid)
+        //{
+        //    var conexion = contextoDB.CreateConnection();
 
-            DynamicParameters parametrosSentencia = new();
-            parametrosSentencia.Add("@pais_guid", pais_guid,
-                                    DbType.Guid, ParameterDirection.Input);
+        //    DynamicParameters parametrosSentencia = new();
+        //    parametrosSentencia.Add("@pais_guid", pais_guid,
+        //                            DbType.Guid, ParameterDirection.Input);
 
-            //Aqui colocamos la informacion nutricional
-            string sentenciaSQL = "SELECT count(*) totalRegistros " +
-                "FROM core.v_info_razas " +
-                "WHERE pais_uuid = @pais_guid";
+        //    //Aqui colocamos la informacion nutricional
+        //    string sentenciaSQL = "SELECT count(*) totalRegistros " +
+        //        "FROM core.v_info_razas " +
+        //        "WHERE pais_uuid = @pais_guid";
 
-            var totalRegistros = await conexion
-                .QueryAsync<int>(sentenciaSQL, parametrosSentencia);
+        //    var totalRegistros = await conexion
+        //        .QueryAsync<int>(sentenciaSQL, parametrosSentencia);
 
-            return totalRegistros.FirstOrDefault();
-        }
+        //    return totalRegistros.FirstOrDefault();
+        //}
 
 
-        public async Task<bool> CreateAsync(Pais unPais)
-        {
-            bool resultadoAccion = false;
+        //public async Task<bool> CreateAsync(Pais unPais)
+        //{
+        //    bool resultadoAccion = false;
 
-            try
-            {
-                var conexion = contextoDB.CreateConnection();
+        //    try
+        //    {
+        //        var conexion = contextoDB.CreateConnection();
 
-                string procedimiento = "core.p_insertar_pais";
+        //        string procedimiento = "core.p_insertar_pais";
 
-                var parametros = new
-                {
-                    p_nombre = unPais.Nombre,
-                    p_continente = unPais.Continente
-                };
+        //        var parametros = new
+        //        {
+        //            p_nombre = unPais.Nombre,
+        //            p_continente = unPais.Continente
+        //        };
 
-                var cantidadFilas = await conexion
-                    .ExecuteAsync(
-                        procedimiento,
-                        parametros,
-                        commandType: CommandType.StoredProcedure);
+        //        var cantidadFilas = await conexion
+        //            .ExecuteAsync(
+        //                procedimiento,
+        //                parametros,
+        //                commandType: CommandType.StoredProcedure);
 
-                if (cantidadFilas != 0)
-                    resultadoAccion = true;
-            }
-            catch (NpgsqlException error)
-            {
-                throw new DbOperationException(error.Message);
-            }
+        //        if (cantidadFilas != 0)
+        //            resultadoAccion = true;
+        //    }
+        //    catch (NpgsqlException error)
+        //    {
+        //        throw new DbOperationException(error.Message);
+        //    }
 
-            return resultadoAccion;
-        }
+        //    return resultadoAccion;
+        //}
 
-        public async Task<bool> UpdateAsync(Pais unPais)
-        {
-            bool resultadoAccion = false;
+        //public async Task<bool> UpdateAsync(Pais unPais)
+        //{
+        //    bool resultadoAccion = false;
 
-            var paisExistente = await GetByGuidAsync(unPais.Uuid);
+        //    var paisExistente = await GetByGuidAsync(unPais.Uuid);
 
-            if (paisExistente.Uuid == Guid.Empty)
-                throw new DbOperationException($"No se puede actualizar. No existe la fruta {unPais.Nombre!}.");
+        //    if (paisExistente.Uuid == Guid.Empty)
+        //        throw new DbOperationException($"No se puede actualizar. No existe la fruta {unPais.Nombre!}.");
 
-            try
-            {
-                var conexion = contextoDB.CreateConnection();
+        //    try
+        //    {
+        //        var conexion = contextoDB.CreateConnection();
 
-                string procedimiento = "core.p_actualizar_pais";
-                var parametros = new
-                {
-                    p_uuid = unPais.Uuid,
-                    p_nombre = unPais.Nombre,
-                    p_continente = unPais.Continente
-                };
+        //        string procedimiento = "core.p_actualizar_pais";
+        //        var parametros = new
+        //        {
+        //            p_uuid = unPais.Uuid,
+        //            p_nombre = unPais.Nombre,
+        //            p_continente = unPais.Continente
+        //        };
 
-                var cantidad_filas = await conexion.ExecuteAsync(
-                    procedimiento,
-                    parametros,
-                    commandType: CommandType.StoredProcedure);
+        //        var cantidad_filas = await conexion.ExecuteAsync(
+        //            procedimiento,
+        //            parametros,
+        //            commandType: CommandType.StoredProcedure);
 
-                if (cantidad_filas != 0)
-                    resultadoAccion = true;
-            }
-            catch (NpgsqlException error)
-            {
-                throw new DbOperationException(error.Message);
-            }
+        //        if (cantidad_filas != 0)
+        //            resultadoAccion = true;
+        //    }
+        //    catch (NpgsqlException error)
+        //    {
+        //        throw new DbOperationException(error.Message);
+        //    }
 
-            return resultadoAccion;
-        }
+        //    return resultadoAccion;
+        //}
 
-        public async Task<bool> RemoveAsync(Guid pais_guid)
-        {
-            bool resultadoAccion = false;
+        //public async Task<bool> RemoveAsync(Guid pais_guid)
+        //{
+        //    bool resultadoAccion = false;
 
-            try
-            {
+        //    try
+        //    {
 
-                var conexion = contextoDB.CreateConnection();
+        //        var conexion = contextoDB.CreateConnection();
 
-                string procedimiento = "core.p_eliminar_pais";
-                var parametros = new
-                {
-                    p_uuid = pais_guid
-                };
+        //        string procedimiento = "core.p_eliminar_pais";
+        //        var parametros = new
+        //        {
+        //            p_uuid = pais_guid
+        //        };
 
-                var cantidad_filas = await conexion.ExecuteAsync(
-                    procedimiento,
-                    parametros,
-                    commandType: CommandType.StoredProcedure);
+        //        var cantidad_filas = await conexion.ExecuteAsync(
+        //            procedimiento,
+        //            parametros,
+        //            commandType: CommandType.StoredProcedure);
 
-                if (cantidad_filas != 0)
-                    resultadoAccion = true;
-            }
-            catch (NpgsqlException error)
-            {
-                throw new DbOperationException(error.Message);
-            }
+        //        if (cantidad_filas != 0)
+        //            resultadoAccion = true;
+        //    }
+        //    catch (NpgsqlException error)
+        //    {
+        //        throw new DbOperationException(error.Message);
+        //    }
 
-            return resultadoAccion;
-        }
+        //    return resultadoAccion;
+        //}
     }
 }

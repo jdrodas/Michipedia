@@ -1,6 +1,6 @@
-﻿using MICHIPEDIA_CS_REST_SQL_API.Models;
+﻿using MICHIPEDIA_CS_REST_NoSQL_API.Models;
 
-namespace MICHIPEDIA_CS_REST_SQL_API.Interfaces
+namespace MICHIPEDIA_CS_REST_NoSQL_API.Interfaces
 {
     public interface ICaracteristicaRepository
     {

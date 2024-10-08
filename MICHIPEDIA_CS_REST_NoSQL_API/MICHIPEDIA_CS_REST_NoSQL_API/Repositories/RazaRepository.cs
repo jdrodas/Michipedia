@@ -1,12 +1,11 @@
-﻿using Dapper;
-using MICHIPEDIA_CS_REST_SQL_API.DbContexts;
-using MICHIPEDIA_CS_REST_SQL_API.Exceptions;
-using MICHIPEDIA_CS_REST_SQL_API.Interfaces;
-using MICHIPEDIA_CS_REST_SQL_API.Models;
-using Npgsql;
+﻿
+using MICHIPEDIA_CS_REST_NoSQL_API.DbContexts;
+using MICHIPEDIA_CS_REST_NoSQL_API.Exceptions;
+using MICHIPEDIA_CS_REST_NoSQL_API.Interfaces;
+using MICHIPEDIA_CS_REST_NoSQL_API.Models;
 using System.Data;
 
-namespace MICHIPEDIA_CS_REST_SQL_API.Repositories
+namespace MICHIPEDIA_CS_REST_NoSQL_API.Repositories
 {
     public class RazaRepository(PgsqlDbContext unContexto) : IRazaRepository
     {

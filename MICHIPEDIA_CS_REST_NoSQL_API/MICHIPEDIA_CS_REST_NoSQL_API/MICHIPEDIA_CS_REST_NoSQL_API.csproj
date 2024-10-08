@@ -7,7 +7,34 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <Compile Remove="Controllers\CaracteristicasController.cs" />
+    <Compile Remove="Controllers\RazasController.cs" />
+    <Compile Remove="Controllers\ResumenController.cs" />
+    <Compile Remove="Interfaces\ICaracteristicaRepository.cs" />
+    <Compile Remove="Interfaces\IRazaRepository.cs" />
+    <Compile Remove="Interfaces\IResumenRepository.cs" />
+    <Compile Remove="Models\Caracteristica.cs" />
+    <Compile Remove="Models\CaracteristicaRaza.cs" />
+    <Compile Remove="Models\CaracteristicaSimplificada.cs" />
+    <Compile Remove="Models\CaracteristicaValorada.cs" />
+    <Compile Remove="Models\Comportamiento.cs" />
+    <Compile Remove="Models\Raza.cs" />
+    <Compile Remove="Models\RazaCaracterizada.cs" />
+    <Compile Remove="Models\RazaDetallada.cs" />
+    <Compile Remove="Models\Resumen.cs" />
+    <Compile Remove="Repositories\CaracteristicaRepository.cs" />
+    <Compile Remove="Repositories\RazaRepository.cs" />
+    <Compile Remove="Repositories\ResumenRepository.cs" />
+    <Compile Remove="Services\CaracteristicaService.cs" />
+    <Compile Remove="Services\RazaService.cs" />
+    <Compile Remove="Services\ResumenService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+    <PackageReference Include="MongoDB.Bson" Version="2.29.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.29.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.8.1" />
   </ItemGroup>
 
   <ItemGroup>

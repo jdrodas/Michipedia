@@ -1,7 +1,7 @@
-﻿using MICHIPEDIA_CS_REST_SQL_API.Services;
+﻿using MICHIPEDIA_CS_REST_NoSQL_API.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MICHIPEDIA_CS_REST_SQL_API.Controllers
+namespace MICHIPEDIA_CS_REST_NoSQL_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
