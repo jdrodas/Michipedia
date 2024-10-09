@@ -1,0 +1,26 @@
+[
+  {
+    "nombre": "Independencia",
+    "descripcion": "Qué tan autónomo es el gato"
+  },
+  {
+    "nombre": "Inteligencia",
+    "descripcion": "Capacidad para aprender y resolver problemas"
+  },
+  {
+    "nombre": "Nivel de energía",
+    "descripcion": "Qué tan activo es el gato"
+  },
+  {
+    "nombre": "Nivel de vocalización",
+    "descripcion": "Qué tan vocal o ruidoso es el gato"
+  },
+  {
+    "nombre": "Sociabilidad con humanos",
+    "descripcion": "Cómo interactúa con las personas"
+  },
+  {
+    "nombre": "Sociabilidad con otros gatos",
+    "descripcion": "Cómo se lleva con otros gatos"
+  }
+]

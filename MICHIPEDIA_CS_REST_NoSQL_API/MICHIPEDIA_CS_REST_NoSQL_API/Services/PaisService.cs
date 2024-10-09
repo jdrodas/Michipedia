@@ -11,7 +11,7 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Services
         private readonly IPaisRepository _paisRepository = paisRepository;
         //private readonly IRazaRepository _razaRepository = razaRepository;
 
-        public async Task<IEnumerable<Pais>> GetAllAsync()
+        public async Task<List<Pais>> GetAllAsync()
         {
             return await _paisRepository
                 .GetAllAsync();

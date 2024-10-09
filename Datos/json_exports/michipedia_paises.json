@@ -1,0 +1,130 @@
+[
+  {
+    "nombre": "Egipto",
+    "continente": "África"
+  },
+  {
+    "nombre": "Etiopía",
+    "continente": "África"
+  },
+  {
+    "nombre": "Sudáfrica",
+    "continente": "África"
+  },
+  {
+    "nombre": "Wakanda",
+    "continente": "África"
+  },
+  {
+    "nombre": "Zimbabue",
+    "continente": "África"
+  },
+  {
+    "nombre": "Argentina",
+    "continente": "América"
+  },
+  {
+    "nombre": "Brasil",
+    "continente": "América"
+  },
+  {
+    "nombre": "Canadá",
+    "continente": "América"
+  },
+  {
+    "nombre": "Colombia",
+    "continente": "América"
+  },
+  {
+    "nombre": "Estados Unidos de América",
+    "continente": "América"
+  },
+  {
+    "nombre": "México",
+    "continente": "América"
+  },
+  {
+    "nombre": "Perú",
+    "continente": "América"
+  },
+  {
+    "nombre": "Plaza Sésamo",
+    "continente": "América"
+  },
+  {
+    "nombre": "Afganistán",
+    "continente": "Asia"
+  },
+  {
+    "nombre": "China",
+    "continente": "Asia"
+  },
+  {
+    "nombre": "India",
+    "continente": "Asia"
+  },
+  {
+    "nombre": "Irán",
+    "continente": "Asia"
+  },
+  {
+    "nombre": "Japón",
+    "continente": "Asia"
+  },
+  {
+    "nombre": "Myanmar",
+    "continente": "Asia"
+  },
+  {
+    "nombre": "Tailandia",
+    "continente": "Asia"
+  },
+  {
+    "nombre": "Alemania",
+    "continente": "Europa"
+  },
+  {
+    "nombre": "Chipre",
+    "continente": "Europa"
+  },
+  {
+    "nombre": "España",
+    "continente": "Europa"
+  },
+  {
+    "nombre": "Francia",
+    "continente": "Europa"
+  },
+  {
+    "nombre": "Grecia",
+    "continente": "Europa"
+  },
+  {
+    "nombre": "Italia",
+    "continente": "Europa"
+  },
+  {
+    "nombre": "Noruega",
+    "continente": "Europa"
+  },
+  {
+    "nombre": "Reino Unido",
+    "continente": "Europa"
+  },
+  {
+    "nombre": "Rusia",
+    "continente": "Europa/Asia"
+  },
+  {
+    "nombre": "Turquía",
+    "continente": "Europa/Asia"
+  },
+  {
+    "nombre": "Australia",
+    "continente": "Oceanía"
+  },
+  {
+    "nombre": "Nueva Zelanda",
+    "continente": "Oceanía"
+  }
+]

@@ -4,7 +4,7 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Interfaces
 {
     public interface IPaisRepository
     {
-        public Task<IEnumerable<Pais>> GetAllAsync();
+        public Task<List<Pais>> GetAllAsync();
         public Task<Pais> GetByIdAsync(string pais_id);
         //public Task<Pais> GetCountryByNameAndContinentAsync(Pais unPais);
         //public Task<Pais> GetCountryByNameAndContinentAsync(string pais_continente);

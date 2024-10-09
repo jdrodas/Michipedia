@@ -1,0 +1,30 @@
+[
+  {
+    "nombre": "Cola",
+    "descripcion": "Longitud y forma de la cola"
+  },
+  {
+    "nombre": "Forma de la cabeza",
+    "descripcion": "Descripción de la forma de la cabeza"
+  },
+  {
+    "nombre": "Ojos",
+    "descripcion": "Color y forma de los ojos"
+  },
+  {
+    "nombre": "Orejas",
+    "descripcion": "Tamaño y forma de las orejas"
+  },
+  {
+    "nombre": "Patas",
+    "descripcion": "Longitud y estilo de las patas"
+  },
+  {
+    "nombre": "Pelaje",
+    "descripcion": "Tipo y textura del pelaje"
+  },
+  {
+    "nombre": "Peso",
+    "descripcion": "Peso promedio en kg"
+  }
+]

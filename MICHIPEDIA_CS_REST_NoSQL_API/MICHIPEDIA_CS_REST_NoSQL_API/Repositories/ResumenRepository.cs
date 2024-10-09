@@ -4,31 +4,42 @@ using MICHIPEDIA_CS_REST_NoSQL_API.Models;
 
 namespace MICHIPEDIA_CS_REST_NoSQL_API.Repositories
 {
-    public class ResumenRepository(PgsqlDbContext unContexto) : IResumenRepository
+    public class ResumenRepository(MongoDbContext unContexto) : IResumenRepository
     {
-        private readonly PgsqlDbContext contextoDB = unContexto;
+        private readonly MongoDbContext contextoDB = unContexto;
 
         public async Task<Resumen> GetAllAsync()
         {
             Resumen unResumen = new();
-
             var conexion = contextoDB.CreateConnection();
 
-            string sentenciaSQL = "SELECT COUNT(id) total FROM core.razas";
-            unResumen.Razas = await conexion
-                .QueryFirstAsync<int>(sentenciaSQL, new DynamicParameters());
+            //Total Paises
+            var coleccionPaises = conexion.GetCollection<Pais>(contextoDB.ConfiguracionColecciones.ColeccionPaises);
+            var totalPaises = await coleccionPaises
+                .EstimatedDocumentCountAsync();
 
-            sentenciaSQL = "SELECT COUNT(id) total FROM core.paises";
-            unResumen.Paises = await conexion
-                .QueryFirstAsync<int>(sentenciaSQL, new DynamicParameters());
+            unResumen.Paises = totalPaises;
 
-            sentenciaSQL = "SELECT COUNT(id) total FROM core.caracteristicas";
-            unResumen.Caracteristicas = await conexion
-                .QueryFirstAsync<int>(sentenciaSQL, new DynamicParameters());
+            //Total Razas
+            var coleccionRazas = conexion.GetCollection<Raza>(contextoDB.ConfiguracionColecciones.ColeccionRazas);
+            var totalRazas = await coleccionRazas
+                .EstimatedDocumentCountAsync();
 
-            sentenciaSQL = "SELECT COUNT(id) total FROM core.comportamientos";
-            unResumen.Comportamientos = await conexion
-                .QueryFirstAsync<int>(sentenciaSQL, new DynamicParameters());
+            unResumen.Razas = totalRazas;
+
+            //Total Caracteristicas
+            var coleccionCaracteristicas = conexion.GetCollection<Caracteristica>(contextoDB.ConfiguracionColecciones.ColeccionCaracteristicas);
+            var totalCaracteristicas = await coleccionCaracteristicas
+                .EstimatedDocumentCountAsync();
+
+            unResumen.Caracteristicas = totalCaracteristicas;
+
+            //Total Comportamientos
+            var coleccionComportamientos = conexion.GetCollection<Comportamiento>(contextoDB.ConfiguracionColecciones.ColeccionComportamientos);
+            var totalComportamientos = await coleccionComportamientos
+                .EstimatedDocumentCountAsync();
+
+            unResumen.Comportamientos = totalComportamientos;
 
             return unResumen;
         }

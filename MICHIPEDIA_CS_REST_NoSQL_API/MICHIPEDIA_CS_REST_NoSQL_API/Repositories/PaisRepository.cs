@@ -11,7 +11,7 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Repositories
     {
         private readonly MongoDbContext contextoDB = unContexto;
 
-        public async Task<IEnumerable<Pais>> GetAllAsync()
+        public async Task<List<Pais>> GetAllAsync()
         {
             var conexion = contextoDB.CreateConnection();
             var coleccionPaises = conexion.GetCollection<Pais>(contextoDB.ConfiguracionColecciones.ColeccionPaises);
