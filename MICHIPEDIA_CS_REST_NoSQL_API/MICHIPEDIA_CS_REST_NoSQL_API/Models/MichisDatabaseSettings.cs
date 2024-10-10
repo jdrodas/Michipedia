@@ -7,7 +7,6 @@
         public string ColeccionPaises { get; set; } = null!;
         public string ColeccionCaracteristicas { get; set; } = null!;
         public string ColeccionComportamientos { get; set; } = null!;
-        public string ColeccionContinentes { get; set; } = null!;
 
         public MichisDatabaseSettings(IConfiguration unaConfiguracion)
         {
@@ -18,8 +17,6 @@
             ColeccionPaises = configuracion.GetSection("ColeccionPaises").Value!;
             ColeccionCaracteristicas = configuracion.GetSection("ColeccionCaracteristicas").Value!;
             ColeccionComportamientos = configuracion.GetSection("ColeccionComportamientos").Value!;
-            ColeccionContinentes = configuracion.GetSection("ColeccionContinentes").Value!;
-
         }
     }
 }

@@ -80,42 +80,22 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Repositories
 
         public async Task<string> GetContinentByNameAsync(string continente_nombre)
         {
-            string continenteEncontrado= string.Empty;
-
             var conexion = contextoDB.CreateConnection();
-            var coleccionContinentes = conexion.GetCollection<Continente>(contextoDB.ConfiguracionColecciones.ColeccionContinentes);
+            var coleccionPaises = conexion.GetCollection<Pais>(contextoDB.ConfiguracionColecciones.ColeccionPaises);
 
-            var resultado = await coleccionContinentes
-                .Find(continente => continente.Nombre == continente_nombre)
-                .FirstOrDefaultAsync();
+            FieldDefinition<Pais, string> campo = "continente";
 
-            if (resultado is not null)
-                continenteEncontrado = resultado.Nombre!;
+            var continentesEcontrados = await coleccionPaises
+                .DistinctAsync(campo, FilterDefinition<Pais>.Empty)
+                .Result
+                .ToListAsync();
 
-            return continenteEncontrado;
+            if (continentesEcontrados.Contains(continente_nombre))
+                return continente_nombre;
+            else
+                return string.Empty;
         }
-        //{
-        //    string nombreContinente = string.Empty;
 
-        //    var conexion = contextoDB.CreateConnection();
-
-        //    DynamicParameters parametrosSentencia = new();
-        //    parametrosSentencia.Add("@continente_nombre", continente_nombre,
-        //                            DbType.String, ParameterDirection.Input);
-
-        //    string sentenciaSQL =
-        //        "SELECT distinct continente " +
-        //        "FROM core.v_info_continentes " +
-        //        "WHERE LOWER(continente) = LOWER(@continente_nombre)";
-
-        //    var resultado = await conexion.QueryAsync<string>(sentenciaSQL,
-        //        parametrosSentencia);
-
-        //    if (resultado.Any())
-        //        nombreContinente = resultado.First();
-
-        //    return nombreContinente;
-        //}
 
         //public async Task<int> GetTotalAssociatedBreedsByCountryGuidAsync(Guid pais_guid)
         //{
