@@ -41,32 +41,27 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Repositories
             return unPais;
         }
 
-        //public async Task<Pais> GetCountryByNameAndContinentAsync(Pais unPais)
-        //{
-        //    Pais paisExistente = new();
+        public async Task<Pais> GetCountryByNameAndContinentAsync(Pais unPais)
+        {
+            Pais paisEncontrado = new();
 
-        //    var conexion = contextoDB.CreateConnection();
+            var conexion = contextoDB.CreateConnection();
+            var coleccionPaises = conexion.GetCollection<Pais>(contextoDB.ConfiguracionColecciones.ColeccionPaises);
 
-        //    DynamicParameters parametrosSentencia = new();
-        //    parametrosSentencia.Add("@pais_nombre", unPais.Nombre,
-        //                            DbType.String, ParameterDirection.Input);
-        //    parametrosSentencia.Add("@pais_continente", unPais.Continente,
-        //                            DbType.String, ParameterDirection.Input);
+            var builder = Builders<Pais>.Filter;
+            var filtro = builder.And(
+                builder.Eq(pais => pais.Nombre, unPais.Nombre),
+                builder.Eq(pais => pais.Continente, unPais.Continente));
 
-        //    string sentenciaSQL =
-        //        "SELECT pais_uuid uuid, nombre, continente " +
-        //        "FROM core.paises " +
-        //        "WHERE LOWER(nombre) = LOWER(@pais_nombre) " +
-        //        "AND LOWER(continente) = LOWER(@pais_continente)";
+            var resultado = await coleccionPaises
+                .Find(filtro)
+                .FirstOrDefaultAsync();
 
-        //    var resultado = await conexion.QueryAsync<Pais>(sentenciaSQL,
-        //        parametrosSentencia);
+            if (resultado is not null)
+                paisEncontrado = resultado;
 
-        //    if (resultado.Any())
-        //        paisExistente = resultado.First();
-
-        //    return paisExistente;
-        //}
+            return paisEncontrado;
+        }
 
         //public async Task<Pais> GetCountryByNameAndContinentAsync(string pais_continente)
         //{
@@ -83,7 +78,22 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Repositories
         //    return paisExistente;
         //}
 
-        //public async Task<string> GetContinentByNameAsync(string continente_nombre)
+        public async Task<string> GetContinentByNameAsync(string continente_nombre)
+        {
+            string continenteEncontrado= string.Empty;
+
+            var conexion = contextoDB.CreateConnection();
+            var coleccionContinentes = conexion.GetCollection<Continente>(contextoDB.ConfiguracionColecciones.ColeccionContinentes);
+
+            var resultado = await coleccionContinentes
+                .Find(continente => continente.Nombre == continente_nombre)
+                .FirstOrDefaultAsync();
+
+            if (resultado is not null)
+                continenteEncontrado = resultado.Nombre!;
+
+            return continenteEncontrado;
+        }
         //{
         //    string nombreContinente = string.Empty;
 
@@ -127,38 +137,23 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Repositories
         //}
 
 
-        //public async Task<bool> CreateAsync(Pais unPais)
-        //{
-        //    bool resultadoAccion = false;
+        public async Task<bool> CreateAsync(Pais unPais)
+        {
+            bool resultadoAccion = false;
 
-        //    try
-        //    {
-        //        var conexion = contextoDB.CreateConnection();
+            var conexion = contextoDB.CreateConnection();
+            var coleccionPaises = conexion.GetCollection<Pais>(contextoDB.ConfiguracionColecciones.ColeccionPaises);
 
-        //        string procedimiento = "core.p_insertar_pais";
+            await coleccionPaises
+                .InsertOneAsync(unPais);
 
-        //        var parametros = new
-        //        {
-        //            p_nombre = unPais.Nombre,
-        //            p_continente = unPais.Continente
-        //        };
+            var resultado = await GetCountryByNameAndContinentAsync(unPais);
 
-        //        var cantidadFilas = await conexion
-        //            .ExecuteAsync(
-        //                procedimiento,
-        //                parametros,
-        //                commandType: CommandType.StoredProcedure);
+            if (resultado is not null)
+                resultadoAccion = true;
 
-        //        if (cantidadFilas != 0)
-        //            resultadoAccion = true;
-        //    }
-        //    catch (NpgsqlException error)
-        //    {
-        //        throw new DbOperationException(error.Message);
-        //    }
-
-        //    return resultadoAccion;
-        //}
+            return resultadoAccion;
+        }
 
         //public async Task<bool> UpdateAsync(Pais unPais)
         //{

@@ -1,92 +1,84 @@
 ﻿using MICHIPEDIA_CS_REST_NoSQL_API.DbContexts;
 using MICHIPEDIA_CS_REST_NoSQL_API.Interfaces;
 using MICHIPEDIA_CS_REST_NoSQL_API.Models;
+using MongoDB.Driver;
 using System.Data;
 
 namespace MICHIPEDIA_CS_REST_NoSQL_API.Repositories
 {
-    public class CaracteristicaRepository(PgsqlDbContext unContexto) : ICaracteristicaRepository
+    public class CaracteristicaRepository(MongoDbContext unContexto) : ICaracteristicaRepository
     {
-        private readonly PgsqlDbContext contextoDB = unContexto;
+        private readonly MongoDbContext contextoDB = unContexto;
 
         public async Task<List<Caracteristica>> GetAllAsync()
         {
             var conexion = contextoDB.CreateConnection();
+            var coleccionCaracteristicas = conexion.GetCollection<Caracteristica>(contextoDB.ConfiguracionColecciones.ColeccionCaracteristicas);
 
-            string sentenciaSQL =
-                "SELECT DISTINCT caracteristica_uuid uuid, nombre, descripcion " +
-                "FROM caracteristicas ORDER BY nombre";
+            var lasCaracteristicas = await coleccionCaracteristicas
+                .Find(_ => true)
+                .SortBy(caracteristica => caracteristica.Nombre)
+                .ToListAsync();
 
-            var resultadoCaracteristicas = await conexion
-                .QueryAsync<Caracteristica>(sentenciaSQL, new DynamicParameters());
-
-            return resultadoCaracteristicas.ToList();
+            return lasCaracteristicas;
         }
 
-        public async Task<Caracteristica> GetByGuidAsync(Guid caracteristica_guid)
+        public async Task<Caracteristica> GetByIdAsync(string caracteristica_id)
         {
             Caracteristica unaCaracteristica = new();
 
             var conexion = contextoDB.CreateConnection();
+            var coleccionCaracteristicas = conexion.GetCollection<Caracteristica>(contextoDB.ConfiguracionColecciones.ColeccionCaracteristicas);
 
-            DynamicParameters parametrosSentencia = new();
-            parametrosSentencia.Add("@caracteristica_guid", caracteristica_guid,
-                                    DbType.Guid, ParameterDirection.Input);
+            var resultado = await coleccionCaracteristicas
+                .Find(caracteristica => caracteristica.Id == caracteristica_id)
+                .FirstOrDefaultAsync();
 
-            string sentenciaSQL =
-                "SELECT caracteristica_uuid uuid, nombre, descripcion " +
-                "FROM core.caracteristicas " +
-                "WHERE caracteristica_uuid = @caracteristica_guid ";
-
-
-            var resultado = await conexion.QueryAsync<Caracteristica>(sentenciaSQL,
-                parametrosSentencia);
-
-            if (resultado.Any())
-                unaCaracteristica = resultado.First();
+            if (resultado is not null)
+                unaCaracteristica = resultado;
 
             return unaCaracteristica;
         }
 
-        public async Task<CaracteristicaValorada> GetDetailedCharacteristicByGuidAsync(Guid caracteristica_guid)
-        {
-            Caracteristica unaCaracteristica = await GetByGuidAsync(caracteristica_guid);
+        //public async Task<CaracteristicaValorada> GetDetailedCharacteristicByGuidAsync(Guid caracteristica_guid)
+        //{
+        //    Caracteristica unaCaracteristica = await GetByGuidAsync(caracteristica_guid);
 
-            CaracteristicaValorada unaCaracteristicaValorada = new()
-            {
-                Uuid = unaCaracteristica.Uuid,
-                Nombre = unaCaracteristica.Nombre,
-                Descripcion = unaCaracteristica.Descripcion,
-                Valoracion_Caracteristicas = await GetValuedCharacteristicByGuidAsync(caracteristica_guid)
-            };
+        //    CaracteristicaValorada unaCaracteristicaValorada = new()
+        //    {
+        //        Uuid = unaCaracteristica.Uuid,
+        //        Nombre = unaCaracteristica.Nombre,
+        //        Descripcion = unaCaracteristica.Descripcion,
+        //        Valoracion_Caracteristicas = await GetValuedCharacteristicByGuidAsync(caracteristica_guid)
+        //    };
 
-            return unaCaracteristicaValorada;
-        }
+        //    return unaCaracteristicaValorada;
+        //}
 
-        private async Task<List<CaracteristicaRaza>> GetValuedCharacteristicByGuidAsync(Guid caracteristica_guid)
-        {
-            List<CaracteristicaRaza> infoCaracteristicasValoradas = [];
+        //private async Task<List<CaracteristicaRaza>> GetValuedCharacteristicByGuidAsync(Guid caracteristica_guid)
+        //{
+        //    List<CaracteristicaRaza> infoCaracteristicasValoradas = [];
 
-            var conexion = contextoDB.CreateConnection();
+        //    var conexion = contextoDB.CreateConnection();
 
-            DynamicParameters parametrosSentencia = new();
-            parametrosSentencia.Add("@caracteristica_uuid", caracteristica_guid,
-                                    DbType.Guid, ParameterDirection.Input);
+        //    DynamicParameters parametrosSentencia = new();
+        //    parametrosSentencia.Add("@caracteristica_uuid", caracteristica_guid,
+        //                            DbType.Guid, ParameterDirection.Input);
 
-            string sentenciaSQL =
-                "SELECT DISTINCT raza_uuid, raza_nombre, " +
-                "caracteristica_valoracion valoracion " +
-                "FROM v_info_caracteristicas_razas " +
-                "WHERE caracteristica_uuid = @caracteristica_uuid " +
-                "ORDER BY raza_nombre";
+        //    string sentenciaSQL =
+        //        "SELECT DISTINCT raza_uuid, raza_nombre, " +
+        //        "caracteristica_valoracion valoracion " +
+        //        "FROM v_info_caracteristicas_razas " +
+        //        "WHERE caracteristica_uuid = @caracteristica_uuid " +
+        //        "ORDER BY raza_nombre";
 
-            var resultado = await conexion
-                .QueryAsync<CaracteristicaRaza>(sentenciaSQL, parametrosSentencia);
+        //    var resultado = await conexion
+        //        .QueryAsync<CaracteristicaRaza>(sentenciaSQL, parametrosSentencia);
 
-            if (resultado.Any())
-                infoCaracteristicasValoradas = resultado.ToList();
+        //    if (resultado.Any())
+        //        infoCaracteristicasValoradas = resultado.ToList();
 
-            return infoCaracteristicasValoradas;
-        }
+        //    return infoCaracteristicasValoradas;
+        //}
     }
 }

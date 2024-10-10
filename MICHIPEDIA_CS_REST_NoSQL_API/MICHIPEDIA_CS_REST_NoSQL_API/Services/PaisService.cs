@@ -5,7 +5,7 @@ using MICHIPEDIA_CS_REST_NoSQL_API.Models;
 namespace MICHIPEDIA_CS_REST_NoSQL_API.Services
 {
     public class PaisService(IPaisRepository paisRepository
-                            //,IRazaRepository razaRepository
+        //,IRazaRepository razaRepository
         )
     {
         private readonly IPaisRepository _paisRepository = paisRepository;
@@ -45,44 +45,44 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Services
         //    return razasAsociadas;
         //}
 
-        //public async Task<Pais> CreateAsync(Pais unPais)
-        //{
-        //    string resultadoValidacionDatos = ValidaDatos(unPais);
+        public async Task<Pais> CreateAsync(Pais unPais)
+        {
+            string resultadoValidacionDatos = ValidaDatos(unPais);
 
-        //    if (!string.IsNullOrEmpty(resultadoValidacionDatos))
-        //        throw new AppValidationException(resultadoValidacionDatos);
+            if (!string.IsNullOrEmpty(resultadoValidacionDatos))
+                throw new AppValidationException(resultadoValidacionDatos);
 
-        //    var continenteExistente = await _paisRepository
-        //        .GetContinentByNameAsync(unPais.Continente!);
+            var continenteExistente = await _paisRepository
+                .GetContinentByNameAsync(unPais.Continente!);
 
-        //    if (string.IsNullOrEmpty(continenteExistente))
-        //        throw new AppValidationException($"'No existe un continente {unPais.Continente} registrado previamente");
+            if (string.IsNullOrEmpty(continenteExistente))
+                throw new AppValidationException($"'No existe un continente {unPais.Continente} registrado previamente");
 
-        //    var paisExistente = await _paisRepository
-        //        .GetCountryByNameAndContinentAsync(unPais);
+            var paisExistente = await _paisRepository
+                .GetCountryByNameAndContinentAsync(unPais);
 
-        //    if (paisExistente.Uuid != Guid.Empty)
-        //        throw new AppValidationException($"Ya existe el pais {unPais.Nombre} " +
-        //            $"ubicado en el continente {unPais.Continente}");
+            if (!string.IsNullOrEmpty(paisExistente.Id))
+                throw new AppValidationException($"Ya existe el pais {unPais.Nombre} " +
+                    $"ubicado en el continente {unPais.Continente}");
 
-        //    try
-        //    {
-        //        bool resultado = await _paisRepository
-        //            .CreateAsync(unPais);
+            try
+            {
+                bool resultado = await _paisRepository
+                    .CreateAsync(unPais);
 
-        //        if (!resultado)
-        //            throw new AppValidationException("Operación ejecutada pero no generó cambios");
+                if (!resultado)
+                    throw new AppValidationException("Operación ejecutada pero no generó cambios");
 
-        //        paisExistente = await _paisRepository
-        //            .GetCountryByNameAndContinentAsync(unPais);
-        //    }
-        //    catch (DbOperationException)
-        //    {
-        //        throw;
-        //    }
+                paisExistente = await _paisRepository
+                    .GetCountryByNameAndContinentAsync(unPais);
+            }
+            catch (DbOperationException)
+            {
+                throw;
+            }
 
-        //    return paisExistente;
-        //}
+            return paisExistente;
+        }
 
         //public async Task<Pais> UpdateAsync(Pais unPais)
         //{
@@ -154,15 +154,15 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Services
 
         //}
 
-        //private static string ValidaDatos(Pais unPais)
-        //{
-        //    if (string.IsNullOrEmpty(unPais.Nombre))
-        //        return ("El país de origen de la raza no puede estar vacío");
+        private static string ValidaDatos(Pais unPais)
+        {
+            if (string.IsNullOrEmpty(unPais.Nombre))
+                return ("El país de origen de la raza no puede estar vacío");
 
-        //    if (string.IsNullOrEmpty(unPais.Continente))
-        //        return ("El continente de origen de la raza no puede estar vacío");
+            if (string.IsNullOrEmpty(unPais.Continente))
+                return ("El continente de origen de la raza no puede estar vacío");
 
-        //    return string.Empty;
-        //}
+            return string.Empty;
+        }
     }
 }

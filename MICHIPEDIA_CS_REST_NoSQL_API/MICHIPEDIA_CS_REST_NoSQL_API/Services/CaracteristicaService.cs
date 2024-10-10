@@ -14,18 +14,16 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Services
                 .GetAllAsync();
         }
 
-        public async Task<CaracteristicaValorada> GetByGuidAsync(Guid caracteristica_guid)
+        public async Task<Caracteristica> GetByIdAsync(string caracteristica_id)
         {
             Caracteristica unaCaracteristica = await _caracteristicaRepository
-                .GetByGuidAsync(caracteristica_guid);
+                .GetByIdAsync(caracteristica_id);
 
-            if (unaCaracteristica.Uuid == Guid.Empty)
-                throw new AppValidationException($"Caracteristica no encontrada con el guid {caracteristica_guid}");
+            if (string.IsNullOrEmpty(unaCaracteristica.Id))
+                throw new AppValidationException($"Caracteristica no encontrada con el id {caracteristica_id}");
 
-            CaracteristicaValorada unaCaracteristicaValorada = await _caracteristicaRepository
-                .GetDetailedCharacteristicByGuidAsync(caracteristica_guid);
 
-            return unaCaracteristicaValorada;
+            return unaCaracteristica;
         }
     }
 }

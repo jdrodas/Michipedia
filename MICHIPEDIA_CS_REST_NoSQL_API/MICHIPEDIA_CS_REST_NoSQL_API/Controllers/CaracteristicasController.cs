@@ -19,13 +19,13 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Controllers
             return Ok(lasCaracteristicas);
         }
 
-        [HttpGet("{caracteristica_guid:Guid}")]
-        public async Task<IActionResult> GetByGuidAsync(Guid caracteristica_guid)
+        [HttpGet("{caracteristica_id:length(24)}")]
+        public async Task<IActionResult> GetByIdAsync(string caracteristica_id)
         {
             try
             {
                 var unaCaracteristica = await _caracteristicaService
-                    .GetByGuidAsync(caracteristica_guid);
+                    .GetByIdAsync(caracteristica_id);
 
                 return Ok(unaCaracteristica);
             }

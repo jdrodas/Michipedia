@@ -52,25 +52,25 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Controllers
         //    }
         //}
 
-        //[HttpPost]
-        //public async Task<IActionResult> CreateAsync(Pais unPais)
-        //{
-        //    try
-        //    {
-        //        var paisCreado = await _paisService
-        //            .CreateAsync(unPais);
+        [HttpPost]
+        public async Task<IActionResult> CreateAsync(Pais unPais)
+        {
+            try
+            {
+                var paisCreado = await _paisService
+                    .CreateAsync(unPais);
 
-        //        return Ok(paisCreado);
-        //    }
-        //    catch (AppValidationException error)
-        //    {
-        //        return BadRequest($"Error en la validación: {error.Message}");
-        //    }
-        //    catch (DbOperationException error)
-        //    {
-        //        return BadRequest($"Error en la operación de la DB {error.Message}");
-        //    }
-        //}
+                return Ok(paisCreado);
+            }
+            catch (AppValidationException error)
+            {
+                return BadRequest($"Error en la validación: {error.Message}");
+            }
+            catch (DbOperationException error)
+            {
+                return BadRequest($"Error en la operación de la DB {error.Message}");
+            }
+        }
 
         //[HttpPut]
         //public async Task<IActionResult> UpdateAsync(Pais unPais)
