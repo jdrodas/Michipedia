@@ -18,7 +18,8 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Repositories
 
             var losPaises = await coleccionPaises
                 .Find(_ => true)
-                .SortBy(pais => pais.Nombre)
+                .SortBy(pais => pais.Continente)
+                .ThenBy(pais => pais.Nombre)
                 .ToListAsync();
 
             return losPaises;

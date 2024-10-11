@@ -36,21 +36,21 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Controllers
             }
         }
 
-        //[HttpGet("{pais_guid:Guid}/Razas")]
-        //public async Task<IActionResult> GetBreedsAsync(Guid pais_guid)
-        //{
-        //    try
-        //    {
-        //        var lasRazasAsociadas = await _paisService
-        //            .GetBreedsAsync(pais_guid);
+        [HttpGet("{pais_id:length(24)}/Razas")]
+        public async Task<IActionResult> GetBreedsAsync(string pais_id)
+        {
+            try
+            {
+                var lasRazasAsociadas = await _paisService
+                    .GetBreedsAsync(pais_id);
 
-        //        return Ok(lasRazasAsociadas);
-        //    }
-        //    catch (AppValidationException error)
-        //    {
-        //        return NotFound(error.Message);
-        //    }
-        //}
+                return Ok(lasRazasAsociadas);
+            }
+            catch (AppValidationException error)
+            {
+                return NotFound(error.Message);
+            }
+        }
 
         [HttpPost]
         public async Task<IActionResult> CreateAsync(Pais unPais)

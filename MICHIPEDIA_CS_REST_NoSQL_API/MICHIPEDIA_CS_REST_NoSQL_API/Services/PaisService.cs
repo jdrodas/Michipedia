@@ -4,12 +4,11 @@ using MICHIPEDIA_CS_REST_NoSQL_API.Models;
 
 namespace MICHIPEDIA_CS_REST_NoSQL_API.Services
 {
-    public class PaisService(IPaisRepository paisRepository
-        //,IRazaRepository razaRepository
-        )
+    public class PaisService(IPaisRepository paisRepository, 
+                            IRazaRepository razaRepository)
     {
         private readonly IPaisRepository _paisRepository = paisRepository;
-        //private readonly IRazaRepository _razaRepository = razaRepository;
+        private readonly IRazaRepository _razaRepository = razaRepository;
 
         public async Task<List<Pais>> GetAllAsync()
         {
@@ -28,22 +27,24 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Services
             return unPais;
         }
 
-        //public async Task<List<Raza>> GetBreedsAsync(Guid pais_guid)
-        //{
-        //    Pais unPais = await _paisRepository
-        //        .GetByGuidAsync(pais_guid);
+        public async Task<List<Raza>> GetBreedsAsync(string pais_id)
+        {
+            Pais unPais = await _paisRepository
+                .GetByIdAsync(pais_id);
 
-        //    if (unPais.Uuid == Guid.Empty)
-        //        throw new AppValidationException($"Pais no encontrado con el id {pais_guid}");
+            if (string.IsNullOrEmpty(unPais.Id))
+                throw new AppValidationException($"Pais no encontrado con el id {pais_id}");
 
-        //    var razasAsociadas = await _razaRepository
-        //        .GetByCountryAsync(pais_guid);
+            string descripcion_pais = unPais.Nombre + " - " + unPais.Continente;
+            
+            var razasAsociadas = await _razaRepository
+                .GetByCountryAsync(descripcion_pais!);
 
-        //    if (razasAsociadas.Count == 0)
-        //        throw new AppValidationException($"Pais {unPais.Nombre} no tiene razas asociadas");
+            if (razasAsociadas.Count == 0)
+                throw new AppValidationException($"Pais {unPais.Nombre} no tiene razas asociadas");
 
-        //    return razasAsociadas;
-        //}
+            return razasAsociadas;
+        }
 
         public async Task<Pais> CreateAsync(Pais unPais)
         {

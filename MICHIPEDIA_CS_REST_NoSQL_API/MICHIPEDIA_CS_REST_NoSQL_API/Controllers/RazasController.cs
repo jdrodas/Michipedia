@@ -20,13 +20,13 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Controllers
             return Ok(lasRazas);
         }
 
-        [HttpGet("{raza_guid:Guid}")]
-        public async Task<IActionResult> GetByGuidAsync(Guid raza_guid)
+        [HttpGet("{raza_id:length(24)}")]
+        public async Task<IActionResult> GetByIdAsync(string raza_id)
         {
             try
             {
                 var unaRaza = await _razaService
-                    .GetByGuidAsync(raza_guid);
+                    .GetByIdAsync(raza_id);
 
                 return Ok(unaRaza);
             }
@@ -36,24 +36,24 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateAsync(Raza unaRaza)
-        {
-            try
-            {
-                var razaCreada = await _razaService
-                    .CreateAsync(unaRaza);
+        //[HttpPost]
+        //public async Task<IActionResult> CreateAsync(Raza unaRaza)
+        //{
+        //    try
+        //    {
+        //        var razaCreada = await _razaService
+        //            .CreateAsync(unaRaza);
 
-                return Ok(razaCreada);
-            }
-            catch (AppValidationException error)
-            {
-                return BadRequest($"Error en la validación: {error.Message}");
-            }
-            catch (DbOperationException error)
-            {
-                return BadRequest($"Error en la operación de la DB {error.Message}");
-            }
-        }
+        //        return Ok(razaCreada);
+        //    }
+        //    catch (AppValidationException error)
+        //    {
+        //        return BadRequest($"Error en la validación: {error.Message}");
+        //    }
+        //    catch (DbOperationException error)
+        //    {
+        //        return BadRequest($"Error en la operación de la DB {error.Message}");
+        //    }
+        //}
     }
 }

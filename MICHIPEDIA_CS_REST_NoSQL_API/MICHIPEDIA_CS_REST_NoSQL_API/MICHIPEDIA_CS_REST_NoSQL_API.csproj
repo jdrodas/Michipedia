@@ -7,15 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\RazasController.cs" />
-    <Compile Remove="Interfaces\IRazaRepository.cs" />
     <Compile Remove="Models\CaracteristicaRaza.cs" />
     <Compile Remove="Models\CaracteristicaSimplificada.cs" />
     <Compile Remove="Models\CaracteristicaValorada.cs" />
     <Compile Remove="Models\RazaCaracterizada.cs" />
     <Compile Remove="Models\RazaDetallada.cs" />
-    <Compile Remove="Repositories\RazaRepository.cs" />
-    <Compile Remove="Services\RazaService.cs" />
   </ItemGroup>
 
   <ItemGroup>
