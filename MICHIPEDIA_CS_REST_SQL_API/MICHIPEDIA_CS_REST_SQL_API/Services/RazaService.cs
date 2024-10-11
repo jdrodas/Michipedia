@@ -1,11 +1,10 @@
 ﻿using MICHIPEDIA_CS_REST_SQL_API.Exceptions;
 using MICHIPEDIA_CS_REST_SQL_API.Interfaces;
 using MICHIPEDIA_CS_REST_SQL_API.Models;
-using MICHIPEDIA_CS_REST_SQL_API.Repositories;
 
 namespace MICHIPEDIA_CS_REST_SQL_API.Services
 {
-    public class RazaService(IRazaRepository razaRepository, 
+    public class RazaService(IRazaRepository razaRepository,
                             IPaisRepository paisRepository)
     {
         private readonly IRazaRepository _razaRepository = razaRepository;
@@ -42,7 +41,7 @@ namespace MICHIPEDIA_CS_REST_SQL_API.Services
             var paisExistente = await _paisRepository
                 .GetCountryByNameAndContinentAsync(unaRaza.Pais!);
 
-            if(paisExistente.Uuid == Guid.Empty)
+            if (paisExistente.Uuid == Guid.Empty)
                 throw new AppValidationException($"No existe registrado el pais de origen de la raza {unaRaza.Pais}");
 
             var razaExistente = await _razaRepository

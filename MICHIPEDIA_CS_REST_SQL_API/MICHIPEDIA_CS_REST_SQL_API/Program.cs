@@ -4,7 +4,6 @@ using MICHIPEDIA_CS_REST_SQL_API.Repositories;
 using MICHIPEDIA_CS_REST_SQL_API.Services;
 using Microsoft.OpenApi.Models;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 //Aqui agregamos los servicios requeridos
@@ -17,17 +16,12 @@ builder.Services.AddScoped<IResumenRepository, ResumenRepository>();
 builder.Services.AddScoped<IPaisRepository, PaisRepository>();
 builder.Services.AddScoped<IRazaRepository, RazaRepository>();
 builder.Services.AddScoped<ICaracteristicaRepository, CaracteristicaRepository>();
-//builder.Services.AddScoped<ITipoReactorRepository, TipoReactorRepository>();
-//builder.Services.AddScoped<IReactorRepository, ReactorRepository>();
 
 //Aqui agregamos los servicios asociados para cada ruta
 builder.Services.AddScoped<ResumenService>();
 builder.Services.AddScoped<PaisService>();
 builder.Services.AddScoped<RazaService>();
 builder.Services.AddScoped<CaracteristicaService>();
-//builder.Services.AddScoped<TipoReactorService>();
-//builder.Services.AddScoped<ReactorService>();
-
 
 // Add services to the container.
 builder.Services.AddControllers()
