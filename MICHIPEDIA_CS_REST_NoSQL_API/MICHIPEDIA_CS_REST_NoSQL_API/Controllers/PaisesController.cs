@@ -72,44 +72,44 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Controllers
             }
         }
 
-        //[HttpPut]
-        //public async Task<IActionResult> UpdateAsync(Pais unPais)
-        //{
-        //    try
-        //    {
-        //        var paisActualizado = await _paisService
-        //            .UpdateAsync(unPais);
+        [HttpPut]
+        public async Task<IActionResult> UpdateAsync(Pais unPais)
+        {
+            try
+            {
+                var paisActualizado = await _paisService
+                    .UpdateAsync(unPais);
 
-        //        return Ok(unPais);
-        //    }
-        //    catch (AppValidationException error)
-        //    {
-        //        return BadRequest($"Error de validación: {error.Message}");
-        //    }
-        //    catch (DbOperationException error)
-        //    {
-        //        return BadRequest($"Error de operacion en DB: {error.Message}");
-        //    }
-        //}
+                return Ok(unPais);
+            }
+            catch (AppValidationException error)
+            {
+                return BadRequest($"Error de validación: {error.Message}");
+            }
+            catch (DbOperationException error)
+            {
+                return BadRequest($"Error de operacion en DB: {error.Message}");
+            }
+        }
 
-        //[HttpDelete]
-        //public async Task<IActionResult> RemoveAsync(Guid pais_guid)
-        //{
-        //    try
-        //    {
-        //        var paisEliminado = await _paisService
-        //            .RemoveAsync(pais_guid);
+        [HttpDelete]
+        public async Task<IActionResult> RemoveAsync(string pais_id)
+        {
+            try
+            {
+                var paisEliminado = await _paisService
+                    .RemoveAsync(pais_id);
 
-        //        return Ok(paisEliminado);
-        //    }
-        //    catch (AppValidationException error)
-        //    {
-        //        return BadRequest($"Error de validación: {error.Message}");
-        //    }
-        //    catch (DbOperationException error)
-        //    {
-        //        return BadRequest($"Error de operacion en DB: {error.Message}");
-        //    }
-        //}
+                return Ok(paisEliminado);
+            }
+            catch (AppValidationException error)
+            {
+                return BadRequest($"Error de validación: {error.Message}");
+            }
+            catch (DbOperationException error)
+            {
+                return BadRequest($"Error de operacion en DB: {error.Message}");
+            }
+        }
     }
 }

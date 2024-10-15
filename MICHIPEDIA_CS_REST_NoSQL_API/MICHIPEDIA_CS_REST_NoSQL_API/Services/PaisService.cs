@@ -85,75 +85,75 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Services
             return paisExistente;
         }
 
-        //public async Task<Pais> UpdateAsync(Pais unPais)
-        //{
-        //    string resultadoValidacionDatos = ValidaDatos(unPais);
+        public async Task<Pais> UpdateAsync(Pais unPais)
+        {
+            string resultadoValidacionDatos = ValidaDatos(unPais);
 
-        //    if (!string.IsNullOrEmpty(resultadoValidacionDatos))
-        //        throw new AppValidationException(resultadoValidacionDatos);
+            if (!string.IsNullOrEmpty(resultadoValidacionDatos))
+                throw new AppValidationException(resultadoValidacionDatos);
 
-        //    var continenteExistente = await _paisRepository
-        //        .GetContinentByNameAsync(unPais.Continente!);
+            var continenteExistente = await _paisRepository
+                .GetContinentByNameAsync(unPais.Continente!);
 
-        //    if (string.IsNullOrEmpty(continenteExistente))
-        //        throw new AppValidationException($"'No existe un continente {unPais.Continente} registrado previamente");
+            if (string.IsNullOrEmpty(continenteExistente))
+                throw new AppValidationException($"'No existe un continente {unPais.Continente} registrado previamente");
 
-        //    var paisExistente = await _paisRepository
-        //        .GetCountryByNameAndContinentAsync(unPais);
+            var paisExistente = await _paisRepository
+                .GetCountryByNameAndContinentAsync(unPais);
 
-        //    if (paisExistente.Uuid != Guid.Empty && paisExistente.Uuid != unPais.Uuid)
-        //        throw new AppValidationException($"Ya existe el pais {unPais.Nombre} " +
-        //            $"ubicado en el continente {unPais.Continente}");
+            if(!string.IsNullOrEmpty(paisExistente.Id) && paisExistente.Id != unPais.Id)
+                throw new AppValidationException($"Ya existe el pais {unPais.Nombre} " +
+                    $"ubicado en el continente {unPais.Continente}");
 
-        //    try
-        //    {
-        //        bool resultadoAccion = await _paisRepository
-        //            .UpdateAsync(unPais);
+            try
+            {
+                bool resultadoAccion = await _paisRepository
+                    .UpdateAsync(unPais);
 
-        //        if (!resultadoAccion)
-        //            throw new AppValidationException("Operación ejecutada pero no generó cambios en la DB");
+                if (!resultadoAccion)
+                    throw new AppValidationException("Operación ejecutada pero no generó cambios en la DB");
 
-        //        paisExistente = await _paisRepository
-        //            .GetByGuidAsync(unPais.Uuid);
-        //    }
-        //    catch (DbOperationException)
-        //    {
-        //        throw;
-        //    }
+                paisExistente = await _paisRepository
+                    .GetByIdAsync(unPais.Id!);
+            }
+            catch (DbOperationException)
+            {
+                throw;
+            }
 
-        //    return paisExistente;
-        //}
+            return paisExistente;
+        }
 
-        //public async Task<Pais> RemoveAsync(Guid pais_guid)
-        //{
-        //    var paisExistente = await _paisRepository
-        //        .GetByGuidAsync(pais_guid);
+        public async Task<Pais> RemoveAsync(string pais_id)
+        {
+            var paisExistente = await _paisRepository
+                .GetByIdAsync(pais_id);
 
-        //    if (paisExistente.Uuid == Guid.Empty)
-        //        throw new AppValidationException($"No existe un pais identificado con el Guid {pais_guid} registrado previamente");
+            if (string.IsNullOrEmpty(paisExistente.Id))
+                throw new AppValidationException($"No existe un pais identificado con el Id {pais_id} registrado previamente");
 
-        //    int totalRazasAsociadas = await _paisRepository
-        //        .GetTotalAssociatedBreedsByCountryGuidAsync(pais_guid);
+            long totalRazasAsociadas = await _paisRepository
+                .GetTotalAssociatedBreedsByCountryIdAsync(pais_id);
 
-        //    if (totalRazasAsociadas != 0)
-        //        throw new AppValidationException($"Pais {paisExistente.Nombre} tiene asociado {totalRazasAsociadas} razas. No se puede eliminar.");
+            if (totalRazasAsociadas != 0)
+                throw new AppValidationException($"Pais {paisExistente.Nombre} tiene asociado {totalRazasAsociadas} razas. No se puede eliminar.");
 
-        //    try
-        //    {
-        //        bool resultadoAccion = await _paisRepository
-        //            .RemoveAsync(pais_guid);
+            try
+            {
+                bool resultadoAccion = await _paisRepository
+                    .RemoveAsync(pais_id);
 
-        //        if (!resultadoAccion)
-        //            throw new AppValidationException("Operación ejecutada pero no generó cambios en la DB");
-        //    }
-        //    catch (DbOperationException)
-        //    {
-        //        throw;
-        //    }
+                if (!resultadoAccion)
+                    throw new AppValidationException("Operación ejecutada pero no generó cambios en la DB");
+            }
+            catch (DbOperationException)
+            {
+                throw;
+            }
 
-        //    return paisExistente;
+            return paisExistente;
 
-        //}
+        }
 
         private static string ValidaDatos(Pais unPais)
         {

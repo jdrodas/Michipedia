@@ -10,7 +10,7 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Services
         )
     {
         private readonly IRazaRepository _razaRepository = razaRepository;
-        //private readonly IPaisRepository _paisRepository = paisRepository;
+        private readonly IPaisRepository _paisRepository = paisRepository;
 
 
         public async Task<List<Raza>> GetAllAsync()
