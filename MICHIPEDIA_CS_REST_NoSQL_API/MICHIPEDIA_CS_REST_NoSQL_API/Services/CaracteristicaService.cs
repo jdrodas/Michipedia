@@ -60,6 +60,81 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Services
             return caracteristicaExistente;
         }
 
+        public async Task<Caracteristica> UpdateAsync(Caracteristica unaCaracteristica)
+        {
+            string resultadoValidacionDatos = ValidaDatos(unaCaracteristica);
+
+            if (!string.IsNullOrEmpty(resultadoValidacionDatos))
+                throw new AppValidationException(resultadoValidacionDatos);
+
+            var caracteristicaExistente = await _caracteristicaRepository
+                .GetByIdAsync(unaCaracteristica.Id!);
+
+            if(string.IsNullOrEmpty(caracteristicaExistente.Id))
+                throw new AppValidationException($"No existe una caracteristica con el Id {unaCaracteristica.Id} ");
+
+            caracteristicaExistente = await _caracteristicaRepository
+                .GetByNameAsync(unaCaracteristica.Nombre!);
+
+            if(string.IsNullOrEmpty(caracteristicaExistente.Id))
+                throw new AppValidationException($"La caracteristica con el nombre {unaCaracteristica.Nombre} " +
+                    $"no está previamente registrada ");
+
+            if(caracteristicaExistente.Id != unaCaracteristica.Id)
+                throw new AppValidationException($"Los Ids para la caracteristica {unaCaracteristica.Nombre} " +
+                    $"no coinciden.");
+
+            try
+            {
+                bool resultadoAccion = await _caracteristicaRepository
+                    .UpdateAsync(unaCaracteristica);
+
+                if (!resultadoAccion)
+                    throw new AppValidationException("Operación ejecutada pero no generó cambios en la DB");
+
+                caracteristicaExistente = await _caracteristicaRepository
+                    .GetByIdAsync(unaCaracteristica.Id!);
+            }
+            catch (DbOperationException)
+            {
+                throw;
+            }
+
+            return caracteristicaExistente;
+        }
+
+        public async Task<Caracteristica> RemoveAsync(string caracteristica_id)
+        {
+            var caracteristicaExistente = await _caracteristicaRepository
+                .GetByIdAsync(caracteristica_id);
+
+            if (string.IsNullOrEmpty(caracteristicaExistente.Id))
+                throw new AppValidationException($"No existe una caracteristica identificada con el Id {caracteristica_id} registrada previamente");
+            
+            //TODO: Contar las razas asociadas a una caracteristica
+            /*            
+            long totalRazasAsociadas = await _paisRepository
+                .GetTotalAssociatedBreedsByCountryIdAsync(pais_id);
+
+            if (totalRazasAsociadas != 0)
+                throw new AppValidationException($"Pais {paisExistente.Nombre} tiene asociado {totalRazasAsociadas} razas. No se puede eliminar.");
+            */
+            try
+            {
+                bool resultadoAccion = await _caracteristicaRepository
+                    .RemoveAsync(caracteristica_id);
+
+                if (!resultadoAccion)
+                    throw new AppValidationException("Operación ejecutada pero no generó cambios en la DB");
+            }
+            catch (DbOperationException)
+            {
+                throw;
+            }
+
+            return caracteristicaExistente;
+
+        }
         private static string ValidaDatos(Caracteristica unaCaracteristica)
         {
             if (string.IsNullOrEmpty(unaCaracteristica.Nombre))

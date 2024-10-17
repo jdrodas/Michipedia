@@ -56,5 +56,47 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Controllers
             }
         }
 
+        [HttpPut]
+        public async Task<IActionResult> UpdateAsync(Caracteristica unaCaracteristica)
+        {
+            try
+            {
+                var caracteristicaActualizada = await _caracteristicaService
+                    .UpdateAsync(unaCaracteristica);
+
+                return Ok(unaCaracteristica);
+            }
+            catch (AppValidationException error)
+            {
+                return BadRequest($"Error de validación: {error.Message}");
+            }
+            catch (DbOperationException error)
+            {
+                return BadRequest($"Error de operacion en DB: {error.Message}");
+            }
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> RemoveAsync(string caracteristica_id)
+        {
+            try
+            {
+                var caracteristicaEliminada = await _caracteristicaService
+                    .RemoveAsync(caracteristica_id);
+
+                return Ok(caracteristicaEliminada);
+            }
+            catch (AppValidationException error)
+            {
+                return BadRequest($"Error de validación: {error.Message}");
+            }
+            catch (DbOperationException error)
+            {
+                return BadRequest($"Error de operacion en DB: {error.Message}");
+            }
+        }
+
+
+
     }
 }

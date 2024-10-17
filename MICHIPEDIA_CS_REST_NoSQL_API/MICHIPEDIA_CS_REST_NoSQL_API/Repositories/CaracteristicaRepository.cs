@@ -40,6 +40,23 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Repositories
             return unaCaracteristica;
         }
 
+        public async Task<Caracteristica> GetByNameAsync(string caracteristica_nombre)
+        {
+            Caracteristica unaCaracteristica = new();
+
+            var conexion = contextoDB.CreateConnection();
+            var coleccionCaracteristicas = conexion.GetCollection<Caracteristica>(contextoDB.ConfiguracionColecciones.ColeccionCaracteristicas);
+
+            var resultado = await coleccionCaracteristicas
+                .Find(caracteristica => caracteristica.Nombre!.ToLower() == caracteristica_nombre.ToLower())
+                .FirstOrDefaultAsync();
+
+            if (resultado is not null)
+                unaCaracteristica = resultado;
+
+            return unaCaracteristica;
+        }
+
         public async Task<Caracteristica> GetByNameAndDescriptionAsync(Caracteristica unaCaracteristica)
         {
             Caracteristica caracteristicaEncontrada = new();
@@ -50,7 +67,7 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Repositories
 
             var builder = Builders<Caracteristica>.Filter;
             var filtro = builder.And(
-                builder.Eq(caracteristica => caracteristica.Nombre, unaCaracteristica.Nombre),
+                builder.Eq(caracteristica => caracteristica.Nombre!, unaCaracteristica.Nombre),
                 builder.Eq(caracteristica => caracteristica.Descripcion, unaCaracteristica.Descripcion));
 
             var resultado = await coleccionCaracteristicas
@@ -81,6 +98,41 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Repositories
 
             return resultadoAccion;
         }
+
+        public async Task<bool> UpdateAsync(Caracteristica unaCaracteristica)
+        {
+            bool resultadoAccion = false;
+
+            var conexion = contextoDB.CreateConnection();
+            var coleccionCaracteristicas = conexion
+                .GetCollection<Caracteristica>(contextoDB.ConfiguracionColecciones.ColeccionCaracteristicas);
+
+            var resultado = await coleccionCaracteristicas
+                .ReplaceOneAsync(caracteristica => caracteristica.Id == unaCaracteristica.Id, unaCaracteristica);
+
+            if (resultado.IsAcknowledged)
+                resultadoAccion = true;
+
+            return resultadoAccion;
+        }
+
+        public async Task<bool> RemoveAsync(string caracteristica_id)
+        {
+            bool resultadoAccion = false;
+
+            var conexion = contextoDB.CreateConnection();
+            var coleccionCaracteristicas = conexion
+                .GetCollection<Pais>(contextoDB.ConfiguracionColecciones.ColeccionCaracteristicas);
+
+            var resultado = await coleccionCaracteristicas
+                .DeleteOneAsync(caracteristica => caracteristica.Id == caracteristica_id);
+
+            if (resultado.IsAcknowledged)
+                resultadoAccion = true;
+
+            return resultadoAccion;
+        }
+
 
 
 
