@@ -1,6 +1,7 @@
 ﻿using MICHIPEDIA_CS_REST_NoSQL_API.Exceptions;
 using MICHIPEDIA_CS_REST_NoSQL_API.Interfaces;
 using MICHIPEDIA_CS_REST_NoSQL_API.Models;
+using MICHIPEDIA_CS_REST_NoSQL_API.Repositories;
 
 namespace MICHIPEDIA_CS_REST_NoSQL_API.Services
 {
@@ -25,5 +26,50 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Services
 
             return unaCaracteristica;
         }
+
+        public async Task<Caracteristica> CreateAsync(Caracteristica unaCaracteristica)
+        {
+            string resultadoValidacionDatos = ValidaDatos(unaCaracteristica);
+
+            if (!string.IsNullOrEmpty(resultadoValidacionDatos))
+                throw new AppValidationException(resultadoValidacionDatos);
+
+            var caracteristicaExistente = await _caracteristicaRepository
+                .GetByNameAndDescriptionAsync(unaCaracteristica);
+
+            if (!string.IsNullOrEmpty(caracteristicaExistente.Id))
+                throw new AppValidationException($"Ya existe una caracteristica {unaCaracteristica.Nombre} " +
+                    $"con descripción \"{unaCaracteristica.Descripcion}\"");
+
+            try
+            {
+                bool resultado = await _caracteristicaRepository
+                    .CreateAsync(unaCaracteristica);
+
+                if (!resultado)
+                    throw new AppValidationException("Operación ejecutada pero no generó cambios");
+
+                caracteristicaExistente = await _caracteristicaRepository
+                    .GetByNameAndDescriptionAsync(unaCaracteristica);
+            }
+            catch (DbOperationException)
+            {
+                throw;
+            }
+
+            return caracteristicaExistente;
+        }
+
+        private static string ValidaDatos(Caracteristica unaCaracteristica)
+        {
+            if (string.IsNullOrEmpty(unaCaracteristica.Nombre))
+                return ("El nombre de la caracteristica no puede estar vacío");
+
+            if (string.IsNullOrEmpty(unaCaracteristica.Descripcion))
+                return ("La descripción de la caracteristica no puede estar vacía");
+
+            return string.Empty;
+        }
+
     }
 }

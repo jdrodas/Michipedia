@@ -40,6 +40,50 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Repositories
             return unaCaracteristica;
         }
 
+        public async Task<Caracteristica> GetByNameAndDescriptionAsync(Caracteristica unaCaracteristica)
+        {
+            Caracteristica caracteristicaEncontrada = new();
+
+            var conexion = contextoDB.CreateConnection();
+            var coleccionCaracteristicas = conexion
+                .GetCollection<Caracteristica>(contextoDB.ConfiguracionColecciones.ColeccionCaracteristicas);
+
+            var builder = Builders<Caracteristica>.Filter;
+            var filtro = builder.And(
+                builder.Eq(caracteristica => caracteristica.Nombre, unaCaracteristica.Nombre),
+                builder.Eq(caracteristica => caracteristica.Descripcion, unaCaracteristica.Descripcion));
+
+            var resultado = await coleccionCaracteristicas
+                .Find(filtro)
+                .FirstOrDefaultAsync();
+
+            if (resultado is not null)
+                caracteristicaEncontrada = resultado;
+
+            return caracteristicaEncontrada;
+        }
+
+        public async Task<bool> CreateAsync(Caracteristica unaCaracteristica)
+        {
+            bool resultadoAccion = false;
+
+            var conexion = contextoDB.CreateConnection();
+            var coleccionCaracteristicas = conexion
+                .GetCollection<Caracteristica>(contextoDB.ConfiguracionColecciones.ColeccionCaracteristicas);
+
+            await coleccionCaracteristicas
+                .InsertOneAsync(unaCaracteristica);
+
+            var resultado = await GetByNameAndDescriptionAsync(unaCaracteristica);
+
+            if (resultado is not null)
+                resultadoAccion = true;
+
+            return resultadoAccion;
+        }
+
+
+
         //public async Task<CaracteristicaValorada> GetDetailedCharacteristicByGuidAsync(Guid caracteristica_guid)
         //{
         //    Caracteristica unaCaracteristica = await GetByGuidAsync(caracteristica_guid);

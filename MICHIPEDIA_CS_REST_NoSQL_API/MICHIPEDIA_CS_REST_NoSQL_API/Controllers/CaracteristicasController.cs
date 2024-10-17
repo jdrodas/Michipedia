@@ -1,4 +1,5 @@
 ﻿using MICHIPEDIA_CS_REST_NoSQL_API.Exceptions;
+using MICHIPEDIA_CS_REST_NoSQL_API.Models;
 using MICHIPEDIA_CS_REST_NoSQL_API.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,5 +35,26 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Controllers
                 return NotFound(error.Message);
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateAsync(Caracteristica unaCaracteristica)
+        {
+            try
+            {
+                var caracteristicaCreada = await _caracteristicaService
+                    .CreateAsync(unaCaracteristica);
+
+                return Ok(caracteristicaCreada);
+            }
+            catch (AppValidationException error)
+            {
+                return BadRequest($"Error en la validación: {error.Message}");
+            }
+            catch (DbOperationException error)
+            {
+                return BadRequest($"Error en la operación de la DB {error.Message}");
+            }
+        }
+
     }
 }

@@ -6,7 +6,10 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Interfaces
     {
         public Task<List<Caracteristica>> GetAllAsync();
         public Task<Caracteristica> GetByIdAsync(string caracteristica_id);
-        
+        public Task<Caracteristica> GetByNameAndDescriptionAsync(Caracteristica unaCaracteristica);
+
         //public Task<CaracteristicaValorada> GetDetailedCharacteristicByGuidAsync(Guid caracteristica_guid);
+
+        public Task<bool> CreateAsync(Caracteristica unaCaracteristica);
     }
 }

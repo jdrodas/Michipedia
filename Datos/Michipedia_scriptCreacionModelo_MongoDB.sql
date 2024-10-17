@@ -82,3 +82,29 @@ db.createCollection("razas",{
         }
     } 
 );
+
+
+db.createCollection("caracteristicas",{
+        validator: 
+        {
+            $jsonSchema: {
+                bsonType: 'object',
+                title: 'Las características de las razas',
+                required: [
+                    'nombre',
+                    'descripcion'
+                ],
+                properties: {
+                    nombre: {
+                    bsonType: 'string',
+                    description: '\'nombre\' Debe ser una cadena de caracteres y no puede ser nulo'
+                    },
+                    descripcion: {
+                    bsonType: 'string',
+                    description: '\'descripcion\' Debe ser una cadena de caracteres y no puede ser nulo'
+                    }
+                }
+            }
+        }
+    } 
+);
