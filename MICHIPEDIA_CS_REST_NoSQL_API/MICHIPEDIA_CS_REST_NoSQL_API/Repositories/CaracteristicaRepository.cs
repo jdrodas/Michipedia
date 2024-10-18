@@ -122,7 +122,7 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Repositories
 
             var conexion = contextoDB.CreateConnection();
             var coleccionCaracteristicas = conexion
-                .GetCollection<Pais>(contextoDB.ConfiguracionColecciones.ColeccionCaracteristicas);
+                .GetCollection<Caracteristica>(contextoDB.ConfiguracionColecciones.ColeccionCaracteristicas);
 
             var resultado = await coleccionCaracteristicas
                 .DeleteOneAsync(caracteristica => caracteristica.Id == caracteristica_id);

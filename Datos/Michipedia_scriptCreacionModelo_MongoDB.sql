@@ -31,65 +31,65 @@ use michis_db;
 -- Creamos las collecciones ... usando un json schema para validación
 
 db.createCollection("paises",{
-    validator: {
-        $jsonSchema: {
-            bsonType: 'object',
-            title: 'Los paises de origen de las razas',
-            required: [
-                '_id',
-                'nombre',
-                'continente'
-            ],
-            properties: {
-                _id: {
-                bsonType: 'objectId'
-                },
-                nombre: {
-                bsonType: 'string',
-                description: "'nombre' Debe ser una cadena de caracteres y no puede ser nulo"
-                },
-                continente: {
-                bsonType: 'string',
-                description: "'continente' Debe ser una cadena de caracteres y no puede ser nulo"
-                }
-            },
-            additionalProperties: false
-            }
-        }
-    } 
-);
-
-db.createCollection("razas",{
-        validator: {
-            $jsonSchema: {
-                bsonType: 'object',
-                title: 'Las razas de los gatos incluidas en esta enciclopedia',
-                required: [
-                '_id',
-                    'nombre',
-                    'descripcion',
-                    'pais'
-                ],
+validator: {
+$jsonSchema: {
+bsonType: 'object',
+title: 'Los paises de origen de las razas',
+required: [
+'_id',
+'nombre',
+'continente'
+],
 properties: {
 _id: {
 bsonType: 'objectId'
 },
-                    nombre: {
-                    bsonType: 'string',
-                    description: "'nombre' Debe ser una cadena de caracteres y no puede ser nulo"
-                    },
-                    descripcion: {
-                    bsonType: 'string',
-                    description: "'descripcion' Debe ser una cadena de caracteres y no puede ser nulo"
-                    },
-                    pais: {
-                    bsonType: 'string',
-                    description: "'pais' Debe ser una cadena de caracteres y no puede ser nulo"
-                    }
-                }
-            }
-        }
-    } 
+nombre: {
+bsonType: 'string',
+description: "'nombre' Debe ser una cadena de caracteres y no puede ser nulo"
+},
+continente: {
+bsonType: 'string',
+description: "'continente' Debe ser una cadena de caracteres y no puede ser nulo"
+}
+},
+additionalProperties: false
+}
+}
+} 
+);
+
+db.createCollection("razas",{
+validator: {
+$jsonSchema: {
+bsonType: 'object',
+title: 'Las razas de los gatos incluidas en esta enciclopedia',
+required: [
+'_id',
+'nombre',
+'descripcion',
+'pais'
+],
+properties: {
+_id: {
+bsonType: 'objectId'
+},
+nombre: {
+bsonType: 'string',
+description: "'nombre' Debe ser una cadena de caracteres y no puede ser nulo"
+},
+descripcion: {
+bsonType: 'string',
+description: "'descripcion' Debe ser una cadena de caracteres y no puede ser nulo"
+},
+pais: {
+bsonType: 'string',
+description: "'pais' Debe ser una cadena de caracteres y no puede ser nulo"
+}
+}
+}
+}
+} 
 );
 
 
@@ -121,4 +121,35 @@ additionalProperties: false
 }
 }
 } 
+);
+
+
+db.createCollection("comportamientos",{
+    validator: 
+        {
+            $jsonSchema: {
+                bsonType: 'object',
+                title: 'Los comportamientos de las razas',
+                required: [
+                    '_id',
+                    'nombre',
+                    'descripcion'
+                ],
+                properties: {
+                    _id: {
+                        bsonType: 'objectId'
+                    },
+                    nombre: {
+                        bsonType: 'string',
+                        description: '\'nombre\' Debe ser una cadena de caracteres y no puede ser nulo'
+                    },
+                    descripcion: {
+                        bsonType: 'string',
+                        description: '\'descripcion\' Debe ser una cadena de caracteres y no puede ser nulo'
+                    }
+                },
+                additionalProperties: false
+            }
+        }
+    } 
 );

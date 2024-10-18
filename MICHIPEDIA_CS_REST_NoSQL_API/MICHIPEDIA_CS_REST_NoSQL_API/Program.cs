@@ -17,13 +17,14 @@ builder.Services.AddScoped<IResumenRepository, ResumenRepository>();
 builder.Services.AddScoped<IPaisRepository, PaisRepository>();
 builder.Services.AddScoped<IRazaRepository, RazaRepository>();
 builder.Services.AddScoped<ICaracteristicaRepository, CaracteristicaRepository>();
+builder.Services.AddScoped<IComportamientoRepository, ComportamientoRepository>();
 
 //Aqui agregamos los servicios asociados para cada ruta
 builder.Services.AddScoped<ResumenService>();
 builder.Services.AddScoped<PaisService>();
 builder.Services.AddScoped<RazaService>();
 builder.Services.AddScoped<CaracteristicaService>();
-
+builder.Services.AddScoped<ComportamientoService>();
 
 // Add services to the container.
 builder.Services.AddControllers()
