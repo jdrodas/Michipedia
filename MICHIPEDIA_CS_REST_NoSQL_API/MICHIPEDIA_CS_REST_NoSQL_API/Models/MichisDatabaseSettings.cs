@@ -8,6 +8,8 @@
         public string ColeccionCaracteristicas { get; set; } = null!;
         public string ColeccionComportamientos { get; set; } = null!;
 
+        public string ColeccionCaracteristicasRazas { get; set; } = null!;
+
         public MichisDatabaseSettings(IConfiguration unaConfiguracion)
         {
             var configuracion = unaConfiguracion.GetSection("MichisDatabaseSettings");
@@ -17,6 +19,8 @@
             ColeccionPaises = configuracion.GetSection("ColeccionPaises").Value!;
             ColeccionCaracteristicas = configuracion.GetSection("ColeccionCaracteristicas").Value!;
             ColeccionComportamientos = configuracion.GetSection("ColeccionComportamientos").Value!;
+            ColeccionCaracteristicasRazas = configuracion.GetSection("ColeccionCaracteristicasRazas").Value!;
+
         }
     }
 }

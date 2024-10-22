@@ -7,10 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Models\CaracteristicaRaza.cs" />
-    <Compile Remove="Models\CaracteristicaSimplificada.cs" />
     <Compile Remove="Models\CaracteristicaValorada.cs" />
-    <Compile Remove="Models\RazaCaracterizada.cs" />
     <Compile Remove="Models\RazaDetallada.cs" />
   </ItemGroup>
 

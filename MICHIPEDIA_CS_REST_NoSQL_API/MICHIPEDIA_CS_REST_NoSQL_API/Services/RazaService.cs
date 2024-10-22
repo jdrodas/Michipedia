@@ -2,6 +2,7 @@
 using MICHIPEDIA_CS_REST_NoSQL_API.Interfaces;
 using MICHIPEDIA_CS_REST_NoSQL_API.Models;
 using MICHIPEDIA_CS_REST_NoSQL_API.Repositories;
+using System.Reflection.PortableExecutable;
 
 namespace MICHIPEDIA_CS_REST_NoSQL_API.Services
 {
@@ -19,7 +20,7 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Services
                 .GetAllAsync();
         }
 
-        public async Task<Raza> GetByIdAsync(string raza_id)
+        public async Task<RazaCaracterizada> GetByIdAsync(string raza_id)
         {
             Raza unaRaza = await _razaRepository
                 .GetByIdAsync(raza_id);
@@ -27,7 +28,18 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Services
             if (string.IsNullOrEmpty(unaRaza.Id))
                 throw new AppValidationException($"Raza no encontrada con el id {raza_id}");
 
-            return unaRaza;
+            //Aqui transformamos esa raza en una raza Caracterizada
+            RazaCaracterizada unaRazaCaracterizada = new()
+            {
+                Id = unaRaza.Id,
+                Nombre = unaRaza.Nombre,
+                Descripcion = unaRaza.Descripcion,
+                Pais = unaRaza.Pais,
+                Caracteristicas = await _razaRepository
+                            .GetCharacteristicsByIdAsync(raza_id)
+            };
+
+            return unaRazaCaracterizada;
         }
 
         //public async Task<Raza> CreateAsync(Raza unaRaza)

@@ -85,6 +85,38 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Repositories
             return razasAsociadas;
         }
 
+        public async Task<List<CaracteristicaSimplificada>> GetCharacteristicsByIdAsync(string raza_id)
+        {
+            List<CaracteristicaSimplificada> caracteristicasAsociadas = [];
+
+            var conexion = contextoDB.CreateConnection();
+            var coleccionCaracteristicasRazas = conexion.GetCollection<CaracteristicaRaza>(contextoDB.ConfiguracionColecciones.ColeccionCaracteristicasRazas);
+
+            var lasCaracteristicas = await coleccionCaracteristicasRazas
+                .Find(caracteristicaRaza => caracteristicaRaza.RazaId == raza_id)
+                .ToListAsync();
+
+            Caracteristica unaCaracteristicaBuscada;
+            var coleccionCaracteristicas = conexion.GetCollection<Caracteristica>(contextoDB.ConfiguracionColecciones.ColeccionCaracteristicas);
+
+            foreach (CaracteristicaRaza unaCaracteristica in lasCaracteristicas)
+            {
+                unaCaracteristicaBuscada = await coleccionCaracteristicas
+                    .Find(caracteristica => caracteristica.Id == unaCaracteristica.CaracteristicaId!)
+                    .FirstOrDefaultAsync();
+
+                caracteristicasAsociadas.Add(
+                    new CaracteristicaSimplificada()
+                    {
+                        Nombre = unaCaracteristicaBuscada.Nombre,
+                        Descripcion = unaCaracteristicaBuscada.Descripcion,
+                        Valoracion = unaCaracteristica.Valoracion
+                    }
+                );
+            }
+            return caracteristicasAsociadas;
+        }
+
         //public async Task<RazaCaracterizada> GetCharacterizedBreedByGuidAsync(Guid raza_guid)
         //{
         //    Raza unaRaza = await GetByGuidAsync(raza_guid);
