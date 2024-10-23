@@ -41,32 +41,6 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Repositories
 
             return unaRaza;
         }
-
-        //public async Task<Raza> GetByNameAsync(string raza_nombre)
-        //{
-        //    Raza unaRaza = new();
-
-        //    var conexion = contextoDB.CreateConnection();
-
-        //    DynamicParameters parametrosSentencia = new();
-        //    parametrosSentencia.Add("@raza_nombre", raza_nombre,
-        //                            DbType.String, ParameterDirection.Input);
-
-        //    string sentenciaSQL =
-        //        "SELECT DISTINCT raza_uuid uuid, nombre, descripcion, pais " +
-        //        "FROM v_info_razas " +
-        //        "WHERE nombre = @raza_nombre ";
-
-
-        //    var resultado = await conexion.QueryAsync<Raza>(sentenciaSQL,
-        //        parametrosSentencia);
-
-        //    if (resultado.Any())
-        //        unaRaza = resultado.First();
-
-        //    return unaRaza;
-        //}
-
         public async Task<List<Raza>> GetByCountryAsync(string descripcion_pais)
         {
             List<Raza> razasAsociadas = [];
@@ -117,152 +91,37 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Repositories
             return caracteristicasAsociadas;
         }
 
-        //public async Task<RazaCaracterizada> GetCharacterizedBreedByGuidAsync(Guid raza_guid)
-        //{
-        //    Raza unaRaza = await GetByGuidAsync(raza_guid);
+        public async Task<List<ComportamientoSimplificado>> GetBehaviorsByIdAsync(string raza_id)
+        {
+            List<ComportamientoSimplificado> comportamientosAsociados = [];
 
-        //    RazaCaracterizada unaRazaCaracterizada = new()
-        //    {
-        //        Uuid = unaRaza.Uuid,
-        //        Nombre = unaRaza.Nombre,
-        //        Descripcion = unaRaza.Descripcion,
-        //        Pais = unaRaza.Pais,
-        //        Caracteristicas = await GetCharacteristicsDetailsAsync(raza_guid)
-        //    };
+            var conexion = contextoDB.CreateConnection();
+            var coleccionComportamientosRazas = conexion.GetCollection<ComportamientoRaza>(contextoDB.ConfiguracionColecciones.ColeccionComportamientosRazas);
 
-        //    return unaRazaCaracterizada;
-        //}
+            var losComportamientos = await coleccionComportamientosRazas
+                .Find(comportamientoRaza=> comportamientoRaza.RazaId == raza_id)
+                .ToListAsync();
 
-        //public async Task<RazaDetallada> GetDetailedBreedByGuidAsync(Guid raza_guid)
-        //{
-        //    Raza unaRaza = await GetByGuidAsync(raza_guid);
+            Comportamiento unComportamientoBuscado;
+            var coleccionComportamientos = conexion.GetCollection<Comportamiento>(contextoDB.ConfiguracionColecciones.ColeccionComportamientos);
 
-        //    RazaDetallada unaRazaDetallada = new()
-        //    {
-        //        Uuid = unaRaza.Uuid,
-        //        Nombre = unaRaza.Nombre,
-        //        Descripcion = unaRaza.Descripcion,
-        //        Pais = unaRaza.Pais,
-        //        Caracteristicas = await GetCharacteristicsDetailsAsync(raza_guid),
-        //        Comportamientos = await GetBehaviorsDetailsAsync(raza_guid)
-        //    };
+            foreach (ComportamientoRaza unComportamiento in losComportamientos)
+            {
+                unComportamientoBuscado = await coleccionComportamientos
+                    .Find(comportamiento => comportamiento.Id == unComportamiento.ComportamientoId!)
+                    .FirstOrDefaultAsync();
 
-        //    return unaRazaDetallada;
-        //}
-
-        //public async Task<bool> CreateAsync(Raza unaRaza)
-        //{
-        //    bool resultadoAccion = false;
-
-        //    //Buscar el pais
-
-        //    string[] datosPais = unaRaza.Pais!.Split('-');
-
-        //    Pais paisBuscado = new()
-        //    {
-        //        Nombre = datosPais[0].Trim(),
-        //        Continente = datosPais[1].Trim()
-        //    };
-
-        //    var conexion = contextoDB.CreateConnection();
-
-        //    DynamicParameters parametrosSentencia = new();
-        //    parametrosSentencia.Add("@pais_nombre", paisBuscado.Nombre,
-        //                            DbType.String, ParameterDirection.Input);
-        //    parametrosSentencia.Add("@pais_continente", paisBuscado.Continente,
-        //                            DbType.String, ParameterDirection.Input);
-
-        //    string sentenciaSQL =
-        //        "SELECT id " +
-        //        "FROM core.paises " +
-        //        "WHERE LOWER(nombre) = LOWER(@pais_nombre) " +
-        //        "AND LOWER(continente) = LOWER(@pais_continente)";
-
-        //    var resultado = await conexion.QueryAsync<int>(sentenciaSQL,
-        //        parametrosSentencia);
-
-        //    int pais_id = resultado.FirstOrDefault();
-
-        //    try
-        //    {
-        //        string procedimiento = "core.p_insertar_raza";
-
-        //        var parametros = new
-        //        {
-        //            p_nombre = unaRaza.Nombre,
-        //            p_pais_id = pais_id,
-        //            p_descripcion = unaRaza.Descripcion
-        //        };
-
-        //        var cantidadFilas = await conexion
-        //            .ExecuteAsync(
-        //                procedimiento,
-        //                parametros,
-        //                commandType: CommandType.StoredProcedure);
-
-        //        if (cantidadFilas != 0)
-        //            resultadoAccion = true;
-        //    }
-        //    catch (NpgsqlException error)
-        //    {
-        //        throw new DbOperationException(error.Message);
-        //    }
-
-        //    return resultadoAccion;
-        //}
-
-        //private async Task<List<CaracteristicaSimplificada>> GetCharacteristicsDetailsAsync(Guid raza_guid)
-        //{
-        //    List<CaracteristicaSimplificada> infoCaracteristicas = [];
-
-        //    var conexion = contextoDB.CreateConnection();
-
-        //    DynamicParameters parametrosSentencia = new();
-        //    parametrosSentencia.Add("@raza_guid", raza_guid,
-        //                            DbType.Guid, ParameterDirection.Input);
-
-        //    string sentenciaSQL =
-        //        "SELECT DISTINCT caracteristica_nombre nombre, caracteristica_descripcion descripcion, " +
-        //        "caracteristica_valoracion valoracion " +
-        //        "FROM v_info_caracteristicas_razas " +
-        //        "WHERE raza_uuid = @raza_guid " +
-        //        "ORDER BY caracteristica_nombre ";
-
-        //    var resultado = await conexion
-        //        .QueryAsync<CaracteristicaSimplificada>(sentenciaSQL, parametrosSentencia);
-
-        //    if (resultado.Any())
-        //        infoCaracteristicas = resultado.ToList();
-
-        //    return infoCaracteristicas;
-        //}
-
-        //private async Task<List<Comportamiento>> GetBehaviorsDetailsAsync(Guid raza_guid)
-        //{
-        //    List<Comportamiento> infoComportamientos = [];
-
-        //    var conexion = contextoDB.CreateConnection();
-
-        //    DynamicParameters parametrosSentencia = new();
-        //    parametrosSentencia.Add("@raza_guid", raza_guid,
-        //                            DbType.Guid, ParameterDirection.Input);
-
-        //    string sentenciaSQL =
-        //        "SELECT DISTINCT comportamiento_nombre nombre, " +
-        //        "comportamiento_descripcion descripcion, " +
-        //        "nivel_nombre nivel, " +
-        //        "nivel_valoracion valoracion " +
-        //        "FROM v_info_comportamientos_razas " +
-        //        "WHERE raza_uuid = @raza_guid " +
-        //        "ORDER BY comportamiento_nombre";
-
-        //    var resultado = await conexion
-        //        .QueryAsync<Comportamiento>(sentenciaSQL, parametrosSentencia);
-
-        //    if (resultado.Any())
-        //        infoComportamientos = resultado.ToList();
-
-        //    return infoComportamientos;
-        //}
+                comportamientosAsociados.Add(
+                    new ComportamientoSimplificado()
+                    {
+                        Nombre = unComportamientoBuscado.Nombre,
+                        Descripcion = unComportamientoBuscado.Descripcion,
+                        Nivel = unComportamiento.Nivel,
+                        Valoracion = unComportamiento.Valoracion
+                    }
+                );
+            }
+            return comportamientosAsociados;
+        }
     }
 }

@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Compile Remove="Models\CaracteristicaValorada.cs" />
-    <Compile Remove="Models\RazaDetallada.cs" />
   </ItemGroup>
 
   <ItemGroup>

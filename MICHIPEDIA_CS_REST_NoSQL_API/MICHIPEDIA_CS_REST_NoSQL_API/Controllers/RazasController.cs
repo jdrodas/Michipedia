@@ -35,25 +35,5 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Controllers
                 return NotFound(error.Message);
             }
         }
-
-        //[HttpPost]
-        //public async Task<IActionResult> CreateAsync(Raza unaRaza)
-        //{
-        //    try
-        //    {
-        //        var razaCreada = await _razaService
-        //            .CreateAsync(unaRaza);
-
-        //        return Ok(razaCreada);
-        //    }
-        //    catch (AppValidationException error)
-        //    {
-        //        return BadRequest($"Error en la validación: {error.Message}");
-        //    }
-        //    catch (DbOperationException error)
-        //    {
-        //        return BadRequest($"Error en la operación de la DB {error.Message}");
-        //    }
-        //}
     }
 }

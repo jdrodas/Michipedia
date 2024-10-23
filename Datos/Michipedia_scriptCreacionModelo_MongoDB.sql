@@ -189,4 +189,44 @@ db.createCollection("caracteristicas_razas",{
             }
         }
     } 
-);        
+);
+
+db.createCollection("comportamientos_razas",{
+    validator: 
+        {
+            $jsonSchema: {
+                bsonType: 'object',
+                title: 'Los comportamientos asociados a las razas de los gatos',
+                required: [
+                    '_id',
+                    'raza_id',
+                    'comportamiento_id',
+                    'nivel',
+                    'valoracion'
+                ],
+                properties: {
+                    _id: {
+                        bsonType: 'objectId'
+                    },
+                    raza_id: {
+                        bsonType: 'objectId',
+                        description: "'raza_id' no puede ser nulo"
+                    },
+                    comportamiento_id: {
+                        bsonType: 'objectId',
+                        description: "'comportamiento_id' no puede ser nulo"
+                    },
+                    nivel: {
+                        bsonType: 'string',
+                        description: "'nivel' Debe ser una cadena de caracteres y no puede ser nulo"
+                    },
+                    valoracion: {
+                        bsonType: 'string',
+                        description: "'valoracion' Debe ser una cadena de caracteres y no puede ser nulo"
+                    }
+                },
+                additionalProperties: false
+            }
+        }
+    } 
+);

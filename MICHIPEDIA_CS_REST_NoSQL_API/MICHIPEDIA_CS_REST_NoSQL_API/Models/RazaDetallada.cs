@@ -8,6 +8,6 @@ namespace MICHIPEDIA_CS_REST_NoSQL_API.Models
         public List<CaracteristicaSimplificada>? Caracteristicas { get; set; } = null;
 
         [JsonPropertyName("comportamientos")]
-        public List<Comportamiento>? Comportamientos { get; set; } = null;
+        public List<ComportamientoSimplificado>? Comportamientos { get; set; } = null;
     }
 }
